@@ -13,7 +13,7 @@ public class PageQuery extends Query {
 
     private int pageNo = 1;
     private int pageSize = 10;
-    private int total;
+    private boolean needTotal = true;
     private List<OrderDesc> orderDescs;
 
 }

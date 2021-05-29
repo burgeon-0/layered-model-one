@@ -2,7 +2,8 @@ package org.burgeon.sbd.controller;
 
 import org.burgeon.sbd.controller.req.PageQuery;
 import org.burgeon.sbd.controller.req.post.PostCmd;
-import org.burgeon.sbd.controller.res.MultiResponse;
+import org.burgeon.sbd.controller.req.post.PostQry;
+import org.burgeon.sbd.controller.res.PageResult;
 import org.burgeon.sbd.controller.res.Response;
 import org.burgeon.sbd.controller.res.SingleResponse;
 import org.burgeon.sbd.controller.res.post.PostVO;
@@ -40,9 +41,13 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public MultiResponse<PostVO> listPost(@Valid @ModelAttribute PageQuery pageQuery) {
+    public SingleResponse<PageResult<PostVO>> listPost(@Valid @ModelAttribute PageQuery pageQuery,
+                                                       @Valid @ModelAttribute PostQry postQry) {
         // TODO list post
-        return MultiResponse.ok(null);
+        PageResult<PostVO> pageResult = new PageResult<>();
+        pageResult.setPageNo(pageQuery.getPageNo());
+        pageResult.setPageSize(pageQuery.getPageSize());
+        return SingleResponse.ok(pageResult);
     }
 
     @GetMapping("/posts/{id}")
