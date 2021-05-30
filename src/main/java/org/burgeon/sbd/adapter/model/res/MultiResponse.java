@@ -1,6 +1,7 @@
-package org.burgeon.sbd.controller.res;
+package org.burgeon.sbd.adapter.model.res;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
@@ -12,6 +13,7 @@ import java.util.Collection;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class MultiResponse<T> extends Response {
 
     private Collection<T> data;

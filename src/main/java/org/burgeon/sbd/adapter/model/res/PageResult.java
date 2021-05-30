@@ -1,4 +1,4 @@
-package org.burgeon.sbd.controller.res;
+package org.burgeon.sbd.adapter.model.res;
 
 import lombok.Data;
 

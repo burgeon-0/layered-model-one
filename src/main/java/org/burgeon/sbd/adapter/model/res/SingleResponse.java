@@ -1,6 +1,7 @@
-package org.burgeon.sbd.controller.res;
+package org.burgeon.sbd.adapter.model.res;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class SingleResponse<T> extends Response {
 
     private T data;

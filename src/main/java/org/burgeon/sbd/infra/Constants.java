@@ -6,6 +6,8 @@ package org.burgeon.sbd.infra;
  */
 public class Constants {
 
-    public static final String API_CLIENT = "/api/client";
+    public static final String API = "/api";
+    public static final String API_ADMIN = "/api/admin";
+    public static final String API_USER = "/api/user";
 
 }

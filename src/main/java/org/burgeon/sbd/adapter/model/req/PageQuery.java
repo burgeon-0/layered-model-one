@@ -1,4 +1,4 @@
-package org.burgeon.sbd.controller.req;
+package org.burgeon.sbd.adapter.model.req;
 
 import lombok.Data;
 
@@ -9,11 +9,11 @@ import java.util.List;
  * @date 2021/5/28
  */
 @Data
-public class PageQuery extends Query {
+public class PageQuery {
 
     private int pageNo = 1;
     private int pageSize = 10;
     private boolean needTotal = true;
-    private List<OrderDesc> orderDescs;
+    private List<OrderDesc> orderDescList;
 
 }
