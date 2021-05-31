@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.burgeon.sbd.domain.ApplicationContextHolder;
 import org.burgeon.sbd.domain.DomainEventBus;
-import org.burgeon.sbd.domain.SNKeeper;
+import org.burgeon.sbd.domain.SnKeeper;
 import org.burgeon.sbd.domain.product.command.CreateProductCommand;
 import org.burgeon.sbd.domain.product.command.UpdateProductCommand;
 import org.burgeon.sbd.domain.product.event.CreateProductEvent;
@@ -73,7 +73,7 @@ public class ProductAggregate {
     private String generateProductNo() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String prefix = sdf.format(new Date());
-        String sn = SNKeeper.get("Product:" + prefix);
+        String sn = SnKeeper.get("Product:" + prefix);
         return prefix + sn;
     }
 

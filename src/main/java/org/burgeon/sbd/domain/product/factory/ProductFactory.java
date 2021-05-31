@@ -21,8 +21,8 @@ public class ProductFactory {
         return new ProductFactory();
     }
 
-    public ProductAggregate load(String ProductNo) {
-        return productRepository.load(ProductNo);
+    public ProductAggregate load(String productNo) {
+        return productRepository.load(productNo);
     }
 
 }

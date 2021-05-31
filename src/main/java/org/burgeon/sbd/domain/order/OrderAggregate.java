@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.burgeon.sbd.domain.ApplicationContextHolder;
 import org.burgeon.sbd.domain.DomainEventBus;
-import org.burgeon.sbd.domain.SNKeeper;
+import org.burgeon.sbd.domain.SnKeeper;
 import org.burgeon.sbd.domain.order.command.PlaceOrderCommand;
 import org.burgeon.sbd.domain.order.event.CancelOrderEvent;
 import org.burgeon.sbd.domain.order.event.DeleteOrderEvent;
@@ -117,7 +117,7 @@ public class OrderAggregate {
     private String generateOrderNo() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         String prefix = sdf.format(new Date());
-        String sn = SNKeeper.get("Order:" + prefix);
+        String sn = SnKeeper.get("Order:" + prefix);
         return prefix + sn;
     }
 

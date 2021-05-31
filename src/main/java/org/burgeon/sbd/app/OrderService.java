@@ -9,6 +9,7 @@ import org.burgeon.sbd.domain.product.factory.ProductFactory;
 import org.burgeon.sbd.infra.exception.BizException;
 import org.burgeon.sbd.infra.exception.ErrorCode;
 import org.burgeon.sbd.infra.exception.ParamException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -22,8 +23,10 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    private ProductFactory productFactory = ProductFactory.getInstance();
-    private OrderFactory orderFactory = OrderFactory.getInstance();
+    @Autowired
+    private ProductFactory productFactory;
+    @Autowired
+    private OrderFactory orderFactory;
 
     public String placeOrder(OrderDTO orderDTO) {
         if (CollectionUtils.isEmpty(orderDTO.getItems())) {

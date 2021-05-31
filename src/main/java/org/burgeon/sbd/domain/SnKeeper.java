@@ -7,7 +7,7 @@ import java.util.Map;
  * @author Sam Lu
  * @date 2021/5/30
  */
-public class SNKeeper {
+public class SnKeeper {
 
     private static final Map<String, Integer> SN_MAP = new HashMap<>();
 
