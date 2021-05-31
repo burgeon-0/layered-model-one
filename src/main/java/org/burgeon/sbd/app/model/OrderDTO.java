@@ -2,6 +2,8 @@ package org.burgeon.sbd.app.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Sam Lu
  * @date 2021/5/30
@@ -9,7 +11,14 @@ import lombok.Data;
 @Data
 public class OrderDTO {
 
-    private String productNo;
-    private Integer count;
+    private List<Item> items;
+
+    @Data
+    public static class Item {
+
+        private String productNo;
+        private Integer count;
+
+    }
 
 }

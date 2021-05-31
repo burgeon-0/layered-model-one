@@ -37,16 +37,19 @@ public class OrderController {
 
     @PostMapping("/{orderNo}/actions/pay")
     public Response payOrder(@PathVariable("orderNo") String orderNo) {
+        orderService.payOrder(orderNo);
         return Response.ok();
     }
 
     @PostMapping("/{orderNo}/actions/cancel")
     public Response cancelOrder(@PathVariable("orderNo") String orderNo) {
+        orderService.cancelOrder(orderNo);
         return Response.ok();
     }
 
     @PostMapping("/{orderNo}/actions/delete")
     public Response deleteOrder(@PathVariable("orderNo") String orderNo) {
+        orderService.deleteOrder(orderNo);
         return Response.ok();
     }
 

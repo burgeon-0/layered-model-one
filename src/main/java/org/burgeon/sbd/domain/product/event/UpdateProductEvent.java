@@ -1,4 +1,4 @@
-package org.burgeon.sbd.adapter.model.res.product;
+package org.burgeon.sbd.domain.product.event;
 
 import lombok.Data;
 
@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2021/5/30
  */
 @Data
-public class ProductVO {
+public class UpdateProductEvent {
 
     private String productNo;
     private String productName;

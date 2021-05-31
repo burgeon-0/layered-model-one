@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Sam Lu
  * @date 2021/5/30
  */
-public class BaseObject implements Serializable {
+public class MagicObject implements Serializable {
 
     public <T> T to(Class<T> tClass) {
         T target = null;

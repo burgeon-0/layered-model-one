@@ -1,10 +1,8 @@
-package org.burgeon.sbd.adapter.model.req.product;
+package org.burgeon.sbd.domain.product.command;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.burgeon.sbd.domain.MagicObject;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @author Sam Lu
@@ -12,13 +10,10 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class UpdateProductForm extends MagicObject {
+public class CreateProductCommand extends MagicObject {
 
-    @NotNull
     private String productName;
-    @NotNull
     private Integer price;
-    @NotNull
     private Integer stock;
 
 }

@@ -1,4 +1,4 @@
-package org.burgeon.sbd.adapter.model.res.order;
+package org.burgeon.sbd.domain.order.event;
 
 import lombok.Data;
 
@@ -10,16 +10,11 @@ import java.util.List;
  * @date 2021/5/30
  */
 @Data
-public class OrderVO {
+public class PlaceOrderEvent {
 
     private String orderNo;
     private List<Item> items;
-    private Integer totalPrice;
     private Date placeTime;
-    private Date payTime;
-    private Date cancelTime;
-    private Date deleteTime;
-    private Integer status;
 
     @Data
     public static class Item {

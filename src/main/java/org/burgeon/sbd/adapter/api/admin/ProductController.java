@@ -8,7 +8,10 @@ import org.burgeon.sbd.adapter.model.res.PageResult;
 import org.burgeon.sbd.adapter.model.res.Response;
 import org.burgeon.sbd.adapter.model.res.SingleResponse;
 import org.burgeon.sbd.adapter.model.res.product.ProductVO;
+import org.burgeon.sbd.app.ProductService;
+import org.burgeon.sbd.app.model.ProductDTO;
 import org.burgeon.sbd.infra.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,19 +25,28 @@ import javax.validation.Valid;
 @RequestMapping(Constants.API_ADMIN + "/products")
 public class ProductController {
 
+    @Autowired
+    private ProductService productService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SingleResponse<String> createProduct(@Valid @RequestBody CreateProductForm createProductForm) {
-        return SingleResponse.ok("");
+        ProductDTO productDTO = createProductForm.to(ProductDTO.class);
+        String productNo = productService.createProduct(productDTO);
+        return SingleResponse.ok(productNo);
     }
 
-    @PutMapping
-    public Response updateProduct(@Valid @RequestBody UpdateProductForm updateProductForm) {
+    @PutMapping("/{productNo}")
+    public Response updateProduct(@PathVariable("productNo") String productNo,
+                                  @Valid @RequestBody UpdateProductForm updateProductForm) {
+        ProductDTO productDTO = updateProductForm.to(ProductDTO.class);
+        productService.updateProduct(productNo, productDTO);
         return Response.ok();
     }
 
     @DeleteMapping("/{productNo}")
     public Response deleteProduct(@PathVariable("productNo") String productNo) {
+        productService.deleteProduct(productNo);
         return Response.ok();
     }
 

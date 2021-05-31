@@ -1,10 +1,10 @@
-package org.burgeon.sbd.adapter.model.req.order;
+package org.burgeon.sbd.domain.order.command;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.burgeon.sbd.domain.MagicObject;
+import org.burgeon.sbd.domain.product.ProductAggregate;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -13,17 +13,14 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PlaceOrderForm extends MagicObject {
+public class PlaceOrderCommand extends MagicObject {
 
-    @NotNull
     private List<Item> items;
 
     @Data
     public static class Item {
 
-        @NotNull
-        private String productNo;
-        @NotNull
+        private ProductAggregate productAggregate;
         private Integer count;
 
     }
