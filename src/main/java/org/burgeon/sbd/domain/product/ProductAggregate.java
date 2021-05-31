@@ -4,16 +4,12 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.burgeon.sbd.domain.ApplicationContextHolder;
-import org.burgeon.sbd.domain.DomainEventBus;
-import org.burgeon.sbd.domain.SnKeeper;
+import org.burgeon.sbd.domain.*;
 import org.burgeon.sbd.domain.product.command.CreateProductCommand;
 import org.burgeon.sbd.domain.product.command.UpdateProductCommand;
 import org.burgeon.sbd.domain.product.event.CreateProductEvent;
 import org.burgeon.sbd.domain.product.event.DeleteProductEvent;
 import org.burgeon.sbd.domain.product.event.UpdateProductEvent;
-import org.burgeon.sbd.domain.product.repository.ProductRepository;
-import org.springframework.beans.BeanUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,14 +29,18 @@ public class ProductAggregate {
 
     @Getter(value = AccessLevel.PRIVATE)
     @Setter(value = AccessLevel.PRIVATE)
-    private ProductRepository productRepository = ApplicationContextHolder.getBean(ProductRepository.class);
+    private Copyable copyable = SpringBeanFactory.getBean(Copyable.class);
     @Getter(value = AccessLevel.PRIVATE)
     @Setter(value = AccessLevel.PRIVATE)
-    private DomainEventBus domainEventBus = ApplicationContextHolder.getBean(DomainEventBus.class);
+    private DomainRepository<ProductAggregate, String> productRepository = SpringBeanFactory.getDomainRepository(
+            ProductAggregate.class, String.class);
+    @Getter(value = AccessLevel.PRIVATE)
+    @Setter(value = AccessLevel.PRIVATE)
+    private DomainEventBus domainEventBus = SpringBeanFactory.getBean(DomainEventBus.class);
 
     public ProductAggregate(CreateProductCommand createProductCommand) {
         productNo = generateProductNo();
-        BeanUtils.copyProperties(createProductCommand, this);
+        copyable.copy(createProductCommand, this);
         productRepository.save(this);
 
         CreateProductEvent createProductEvent = createProductCommand.to(CreateProductEvent.class);
@@ -49,7 +49,7 @@ public class ProductAggregate {
     }
 
     public void update(UpdateProductCommand updateProductCommand) {
-        BeanUtils.copyProperties(updateProductCommand, this);
+        copyable.copy(updateProductCommand, this);
         productRepository.save(this);
 
         UpdateProductEvent updateProductEvent = updateProductCommand.to(UpdateProductEvent.class);

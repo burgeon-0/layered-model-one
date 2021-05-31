@@ -4,17 +4,15 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.burgeon.sbd.domain.ApplicationContextHolder;
-import org.burgeon.sbd.domain.DomainEventBus;
-import org.burgeon.sbd.domain.SnKeeper;
+import org.burgeon.sbd.domain.*;
 import org.burgeon.sbd.domain.order.command.PlaceOrderCommand;
 import org.burgeon.sbd.domain.order.event.CancelOrderEvent;
 import org.burgeon.sbd.domain.order.event.DeleteOrderEvent;
 import org.burgeon.sbd.domain.order.event.PayOrderEvent;
 import org.burgeon.sbd.domain.order.event.PlaceOrderEvent;
-import org.burgeon.sbd.domain.order.repository.OrderItemRepository;
-import org.burgeon.sbd.domain.order.repository.OrderRepository;
 import org.burgeon.sbd.domain.product.ProductAggregate;
+import org.burgeon.sbd.domain.exception.BizException;
+import org.burgeon.sbd.domain.exception.ErrorCode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,13 +40,15 @@ public class OrderAggregate {
 
     @Getter(value = AccessLevel.PRIVATE)
     @Setter(value = AccessLevel.PRIVATE)
-    private OrderRepository orderRepository = ApplicationContextHolder.getBean(OrderRepository.class);
+    private DomainRepository<OrderAggregate, String> orderRepository = SpringBeanFactory.getDomainRepository(
+            OrderAggregate.class, String.class);
     @Getter(value = AccessLevel.PRIVATE)
     @Setter(value = AccessLevel.PRIVATE)
-    private OrderItemRepository orderItemRepository = ApplicationContextHolder.getBean(OrderItemRepository.class);
+    private DomainRepository<OrderItem, String> orderItemRepository = SpringBeanFactory.getDomainRepository(
+            OrderItem.class, String.class);
     @Getter(value = AccessLevel.PRIVATE)
     @Setter(value = AccessLevel.PRIVATE)
-    private DomainEventBus domainEventBus = ApplicationContextHolder.getBean(DomainEventBus.class);
+    private DomainEventBus domainEventBus = SpringBeanFactory.getBean(DomainEventBus.class);
 
     public OrderAggregate(PlaceOrderCommand placeOrderCommand) {
         orderNo = generateOrderNo();
@@ -59,6 +59,10 @@ public class OrderAggregate {
         List<PlaceOrderEvent.Item> eventOrderItems = new ArrayList<>(placeOrderCommand.getItems().size());
         for (PlaceOrderCommand.Item item : placeOrderCommand.getItems()) {
             ProductAggregate productAggregate = item.getProductAggregate();
+            if (!productAggregate.stockEnough(item.getCount())) {
+                throw new BizException(ErrorCode.PRODUCT_STOCK_NOT_ENOUGH);
+            }
+
             OrderItem orderItem = new OrderItem();
             orderItem.setOrderNo(orderNo);
             orderItem.setProductNo(productAggregate.getProductNo());

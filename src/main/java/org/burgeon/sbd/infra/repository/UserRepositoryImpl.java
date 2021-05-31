@@ -1,7 +1,7 @@
 package org.burgeon.sbd.infra.repository;
 
 import org.burgeon.sbd.domain.DomainRepository;
-import org.burgeon.sbd.domain.order.OrderAggregate;
+import org.burgeon.sbd.domain.user.UserAggregate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,20 +11,20 @@ import java.util.List;
  * @date 2021/5/31
  */
 @Component
-public class OrderRepositoryImpl implements DomainRepository<OrderAggregate, String> {
+public class UserRepositoryImpl implements DomainRepository<UserAggregate, String> {
 
     @Override
-    public OrderAggregate load(String orderNo) {
+    public UserAggregate load(String orderNo) {
         return null;
     }
 
     @Override
-    public void save(OrderAggregate order) {
+    public void save(UserAggregate order) {
 
     }
 
     @Override
-    public void save(List<OrderAggregate> orderAggregates) {
+    public void save(List<UserAggregate> productAggregates) {
 
     }
 

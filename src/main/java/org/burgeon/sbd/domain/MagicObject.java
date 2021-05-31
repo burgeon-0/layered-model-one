@@ -17,7 +17,7 @@ public class MagicObject implements Serializable {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        Copyable copyable = ApplicationContextHolder.getBean(Copyable.class);
+        Copyable copyable = SpringBeanFactory.getBean(Copyable.class);
         copyable.copy(this, target);
         return target;
     }

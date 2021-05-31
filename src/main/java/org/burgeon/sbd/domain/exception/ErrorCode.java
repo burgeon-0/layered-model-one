@@ -1,4 +1,4 @@
-package org.burgeon.sbd.infra.exception;
+package org.burgeon.sbd.domain.exception;
 
 import org.springframework.http.HttpStatus;
 
@@ -15,6 +15,14 @@ import org.springframework.http.HttpStatus;
  */
 public enum ErrorCode {
 
+    /**
+     * 登录用户名错误
+     */
+    LOGIN_USERNAME_INVALID(HttpStatus.BAD_REQUEST.value(), 1004001101, "Login Username Invalid"),
+    /**
+     * 登录密码错误
+     */
+    LOGIN_PASSWORD_INVALID(HttpStatus.BAD_REQUEST.value(), 1004001102, "Login Password Invalid"),
     /**
      * 产品库存不足
      */

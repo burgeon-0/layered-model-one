@@ -2,13 +2,12 @@ package org.burgeon.sbd.app;
 
 import org.burgeon.sbd.app.model.OrderDTO;
 import org.burgeon.sbd.domain.order.OrderAggregate;
+import org.burgeon.sbd.domain.order.OrderAggregateFactory;
 import org.burgeon.sbd.domain.order.command.PlaceOrderCommand;
-import org.burgeon.sbd.domain.order.factory.OrderFactory;
 import org.burgeon.sbd.domain.product.ProductAggregate;
-import org.burgeon.sbd.domain.product.factory.ProductFactory;
-import org.burgeon.sbd.infra.exception.BizException;
-import org.burgeon.sbd.infra.exception.ErrorCode;
-import org.burgeon.sbd.infra.exception.ParamException;
+import org.burgeon.sbd.domain.product.ProductAggregateFactory;
+import org.burgeon.sbd.domain.exception.ErrorCode;
+import org.burgeon.sbd.domain.exception.ParamException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -24,9 +23,9 @@ import java.util.List;
 public class OrderService {
 
     @Autowired
-    private ProductFactory productFactory;
+    private ProductAggregateFactory productAggregateFactory;
     @Autowired
-    private OrderFactory orderFactory;
+    private OrderAggregateFactory orderAggregateFactory;
 
     public String placeOrder(OrderDTO orderDTO) {
         if (CollectionUtils.isEmpty(orderDTO.getItems())) {
@@ -35,12 +34,9 @@ public class OrderService {
 
         List<PlaceOrderCommand.Item> orderItems = new ArrayList<>(orderDTO.getItems().size());
         for (OrderDTO.Item item : orderDTO.getItems()) {
-            ProductAggregate productAggregate = productFactory.load(item.getProductNo());
+            ProductAggregate productAggregate = productAggregateFactory.load(item.getProductNo());
             if (productAggregate == null) {
                 throw new ParamException(ErrorCode.PRODUCT_NOT_FOUND);
-            }
-            if (!productAggregate.stockEnough(item.getCount())) {
-                throw new BizException(ErrorCode.PRODUCT_STOCK_NOT_ENOUGH);
             }
             PlaceOrderCommand.Item orderItem = new PlaceOrderCommand.Item();
             orderItem.setProductAggregate(productAggregate);
@@ -55,7 +51,7 @@ public class OrderService {
     }
 
     public void payOrder(String orderNo) {
-        OrderAggregate orderAggregate = orderFactory.load(orderNo);
+        OrderAggregate orderAggregate = orderAggregateFactory.load(orderNo);
         if (orderAggregate == null) {
             throw new ParamException(ErrorCode.ORDER_NOT_FOUND);
         }
@@ -63,7 +59,7 @@ public class OrderService {
     }
 
     public void cancelOrder(String orderNo) {
-        OrderAggregate orderAggregate = orderFactory.load(orderNo);
+        OrderAggregate orderAggregate = orderAggregateFactory.load(orderNo);
         if (orderAggregate == null) {
             throw new ParamException(ErrorCode.ORDER_NOT_FOUND);
         }
@@ -71,7 +67,7 @@ public class OrderService {
     }
 
     public void deleteOrder(String orderNo) {
-        OrderAggregate orderAggregate = orderFactory.load(orderNo);
+        OrderAggregate orderAggregate = orderAggregateFactory.load(orderNo);
         if (orderAggregate == null) {
             throw new ParamException(ErrorCode.ORDER_NOT_FOUND);
         }

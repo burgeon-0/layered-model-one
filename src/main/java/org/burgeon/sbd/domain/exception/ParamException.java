@@ -1,4 +1,4 @@
-package org.burgeon.sbd.infra.exception;
+package org.burgeon.sbd.domain.exception;
 
 /**
  * @author Sam Lu

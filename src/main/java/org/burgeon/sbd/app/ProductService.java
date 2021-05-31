@@ -4,9 +4,9 @@ import org.burgeon.sbd.app.model.ProductDTO;
 import org.burgeon.sbd.domain.product.command.CreateProductCommand;
 import org.burgeon.sbd.domain.product.ProductAggregate;
 import org.burgeon.sbd.domain.product.command.UpdateProductCommand;
-import org.burgeon.sbd.domain.product.factory.ProductFactory;
-import org.burgeon.sbd.infra.exception.ErrorCode;
-import org.burgeon.sbd.infra.exception.ParamException;
+import org.burgeon.sbd.domain.product.ProductAggregateFactory;
+import org.burgeon.sbd.domain.exception.ErrorCode;
+import org.burgeon.sbd.domain.exception.ParamException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class ProductService {
 
     @Autowired
-    private ProductFactory productFactory;
+    private ProductAggregateFactory productAggregateFactory;
 
     public String createProduct(ProductDTO productDTO) {
         CreateProductCommand createProductCommand = productDTO.to(CreateProductCommand.class);
@@ -27,7 +27,7 @@ public class ProductService {
     }
 
     public void updateProduct(String productNo, ProductDTO productDTO) {
-        ProductAggregate productAggregate = productFactory.load(productNo);
+        ProductAggregate productAggregate = productAggregateFactory.load(productNo);
         if (productAggregate == null) {
             throw new ParamException(ErrorCode.PRODUCT_NOT_FOUND);
         }
@@ -36,7 +36,7 @@ public class ProductService {
     }
 
     public void deleteProduct(String productNo) {
-        ProductAggregate productAggregate = productFactory.load(productNo);
+        ProductAggregate productAggregate = productAggregateFactory.load(productNo);
         if (productAggregate == null) {
             throw new ParamException(ErrorCode.PRODUCT_NOT_FOUND);
         }
