@@ -1,6 +1,7 @@
 package org.burgeon.sbd.domain.order.event;
 
 import lombok.Data;
+import org.burgeon.sbd.domain.DomainEvent;
 
 import java.util.Date;
 
@@ -9,7 +10,7 @@ import java.util.Date;
  * @date 2021/5/30
  */
 @Data
-public class CancelOrderEvent {
+public class CancelOrderEvent extends DomainEvent {
 
     private String orderNo;
     private Date cancelTime;

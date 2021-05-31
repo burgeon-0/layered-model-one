@@ -1,6 +1,11 @@
 package org.burgeon.sbd.domain.product;
 
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
+import org.burgeon.sbd.domain.ApplicationContextHolder;
+import org.burgeon.sbd.domain.DomainEventBus;
 import org.burgeon.sbd.domain.SNKeeper;
 import org.burgeon.sbd.domain.product.command.CreateProductCommand;
 import org.burgeon.sbd.domain.product.command.UpdateProductCommand;
@@ -9,7 +14,6 @@ import org.burgeon.sbd.domain.product.event.DeleteProductEvent;
 import org.burgeon.sbd.domain.product.event.UpdateProductEvent;
 import org.burgeon.sbd.domain.product.repository.ProductRepository;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,19 +22,21 @@ import java.util.Date;
  * @author Sam Lu
  * @date 2021/5/30
  */
+@Data
 public class ProductAggregate {
 
-    @Getter
     private String productNo;
-    @Getter
     private String productName;
-    @Getter
     private int price;
     private int stock;
     private boolean deleted;
 
-    @Autowired
-    private ProductRepository productRepository;
+    @Getter(value = AccessLevel.PRIVATE)
+    @Setter(value = AccessLevel.PRIVATE)
+    private ProductRepository productRepository = ApplicationContextHolder.getBean(ProductRepository.class);
+    @Getter(value = AccessLevel.PRIVATE)
+    @Setter(value = AccessLevel.PRIVATE)
+    private DomainEventBus domainEventBus = ApplicationContextHolder.getBean(DomainEventBus.class);
 
     public ProductAggregate(CreateProductCommand createProductCommand) {
         productNo = generateProductNo();
@@ -39,7 +45,7 @@ public class ProductAggregate {
 
         CreateProductEvent createProductEvent = createProductCommand.to(CreateProductEvent.class);
         createProductEvent.setProductNo(productNo);
-        // TODO publish event
+        domainEventBus.publishEvent(createProductEvent);
     }
 
     public void update(UpdateProductCommand updateProductCommand) {
@@ -48,7 +54,7 @@ public class ProductAggregate {
 
         UpdateProductEvent updateProductEvent = updateProductCommand.to(UpdateProductEvent.class);
         updateProductEvent.setProductNo(productNo);
-        // TODO publish event
+        domainEventBus.publishEvent(updateProductEvent);
     }
 
     public void delete() {
@@ -57,7 +63,7 @@ public class ProductAggregate {
 
         DeleteProductEvent deleteProductEvent = new DeleteProductEvent();
         deleteProductEvent.setProductNo(productNo);
-        // TODO publish event
+        domainEventBus.publishEvent(deleteProductEvent);
     }
 
     public boolean stockEnough(int count) {

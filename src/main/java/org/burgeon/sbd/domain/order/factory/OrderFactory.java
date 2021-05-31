@@ -1,25 +1,24 @@
 package org.burgeon.sbd.domain.order.factory;
 
-import org.burgeon.sbd.domain.ApplicationContextHolder;
 import org.burgeon.sbd.domain.order.OrderAggregate;
 import org.burgeon.sbd.domain.order.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Sam Lu
  * @date 2021/5/31
  */
+@Component
 public class OrderFactory {
 
-    public static final OrderFactory INSTANCE = new OrderFactory();
-
-    public static OrderFactory getInstance() {
-        return INSTANCE;
-    }
-
+    @Autowired
     private OrderRepository orderRepository;
 
-    public OrderFactory() {
-        orderRepository = ApplicationContextHolder.getBean(OrderRepository.class);
+    @Bean
+    public OrderFactory getInstance() {
+        return new OrderFactory();
     }
 
     public OrderAggregate load(String orderNo) {

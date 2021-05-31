@@ -1,7 +1,5 @@
 package org.burgeon.sbd.domain;
 
-import org.springframework.beans.BeanUtils;
-
 import java.io.Serializable;
 
 /**
@@ -19,7 +17,8 @@ public class MagicObject implements Serializable {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        BeanUtils.copyProperties(this, target);
+        Copyable copyable = ApplicationContextHolder.getBean(Copyable.class);
+        copyable.copy(this, target);
         return target;
     }
 

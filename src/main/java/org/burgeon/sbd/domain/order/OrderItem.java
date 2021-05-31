@@ -10,6 +10,7 @@ import org.burgeon.sbd.domain.MagicObject;
 @Data
 public class OrderItem extends MagicObject {
 
+    private String orderNo;
     private String productNo;
     private String productName;
     private Integer totalCount;

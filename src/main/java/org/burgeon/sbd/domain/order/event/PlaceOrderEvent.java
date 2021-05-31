@@ -1,6 +1,7 @@
 package org.burgeon.sbd.domain.order.event;
 
 import lombok.Data;
+import org.burgeon.sbd.domain.DomainEvent;
 
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * @date 2021/5/30
  */
 @Data
-public class PlaceOrderEvent {
+public class PlaceOrderEvent extends DomainEvent {
 
     private String orderNo;
     private List<Item> items;
