@@ -2,7 +2,6 @@ package org.burgeon.sbd.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,11 +13,6 @@ public class DomainEventBus {
 
     @Autowired
     private ApplicationContext applicationContext;
-
-    @Bean
-    public DomainEventBus getInstance() {
-        return new DomainEventBus();
-    }
 
     public void publishEvent(DomainEvent event) {
         applicationContext.publishEvent(event);

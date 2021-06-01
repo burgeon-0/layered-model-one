@@ -1,11 +1,12 @@
 package org.burgeon.sbd.adapter.api.user;
 
+import org.burgeon.sbd.app.ProductService;
+import org.burgeon.sbd.app.model.ProductDTO;
 import org.burgeon.sbd.core.req.PageQuery;
-import org.burgeon.sbd.core.res.MultiResponse;
 import org.burgeon.sbd.core.res.PageResult;
 import org.burgeon.sbd.core.res.SingleResponse;
-import org.burgeon.sbd.adapter.model.res.product.ProductVO;
 import org.burgeon.sbd.infra.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,14 +19,20 @@ import javax.validation.Valid;
 @RequestMapping(Constants.API_USER + "/products")
 public class ProductController {
 
+    @Autowired
+    private ProductService productService;
+
     @GetMapping
-    public MultiResponse<PageResult<ProductVO>> listProducts(@Valid @ModelAttribute PageQuery pageQuery) {
-        return MultiResponse.ok(null);
+    public SingleResponse<PageResult<ProductDTO>> listProducts(@Valid @ModelAttribute PageQuery pageQuery) {
+        PageResult<ProductDTO> pageResult = productService.pageProducts(pageQuery.getPageNo(),
+                pageQuery.getPageSize());
+        return SingleResponse.ok(pageResult);
     }
 
     @GetMapping("/{productNo}")
-    public SingleResponse<ProductVO> getProduct(@PathVariable("productNo") String productNo) {
-        return null;
+    public SingleResponse<ProductDTO> getProduct(@PathVariable("productNo") String productNo) {
+        ProductDTO productDTO = productService.getProduct(productNo);
+        return SingleResponse.ok(productDTO);
     }
 
 }

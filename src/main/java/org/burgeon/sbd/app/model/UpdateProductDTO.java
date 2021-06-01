@@ -1,4 +1,4 @@
-package org.burgeon.sbd.adapter.model.res.product;
+package org.burgeon.sbd.app.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,8 +10,6 @@ import org.burgeon.sbd.core.base.ProductBase;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ProductVO extends ProductBase {
-
-    private String productNo;
+public class UpdateProductDTO extends ProductBase {
 
 }

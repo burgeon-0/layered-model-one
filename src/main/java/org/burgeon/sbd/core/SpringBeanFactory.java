@@ -4,11 +4,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.ResolvableType;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Sam Lu
  * @date 2021/5/31
  */
+@Component
 public class SpringBeanFactory implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;

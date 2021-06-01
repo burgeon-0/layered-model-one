@@ -30,7 +30,7 @@ public class UserController {
     public Response register(@Valid @RequestBody RegisterForm registerForm) {
         RegisterDTO registerDTO = registerForm.to(RegisterDTO.class);
         userService.register(registerDTO);
-        return Response.ok();
+        return Response.createSuccess();
     }
 
     @PostMapping("/actions/login")

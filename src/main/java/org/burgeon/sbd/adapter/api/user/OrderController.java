@@ -1,14 +1,13 @@
 package org.burgeon.sbd.adapter.api.user;
 
-import org.burgeon.sbd.core.req.PageQuery;
 import org.burgeon.sbd.adapter.model.req.order.PlaceOrderForm;
-import org.burgeon.sbd.core.res.MultiResponse;
+import org.burgeon.sbd.app.OrderService;
+import org.burgeon.sbd.app.model.OrderDTO;
+import org.burgeon.sbd.app.model.PlaceOrderDTO;
+import org.burgeon.sbd.core.req.PageQuery;
 import org.burgeon.sbd.core.res.PageResult;
 import org.burgeon.sbd.core.res.Response;
 import org.burgeon.sbd.core.res.SingleResponse;
-import org.burgeon.sbd.adapter.model.res.order.OrderVO;
-import org.burgeon.sbd.app.OrderService;
-import org.burgeon.sbd.app.model.OrderDTO;
 import org.burgeon.sbd.infra.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,9 +29,9 @@ public class OrderController {
     @PostMapping("/actions/place")
     @ResponseStatus(HttpStatus.CREATED)
     public SingleResponse<String> placeOrder(@Valid @RequestBody PlaceOrderForm placeOrderForm) {
-        OrderDTO orderDTO = placeOrderForm.to(OrderDTO.class);
-        String orderNo = orderService.placeOrder(orderDTO);
-        return SingleResponse.ok(orderNo);
+        PlaceOrderDTO placeOrderDTO = placeOrderForm.to(PlaceOrderDTO.class);
+        String orderNo = orderService.placeOrder(placeOrderDTO);
+        return SingleResponse.createSuccess(orderNo);
     }
 
     @PostMapping("/{orderNo}/actions/pay")
@@ -54,13 +53,16 @@ public class OrderController {
     }
 
     @GetMapping
-    public MultiResponse<PageResult<OrderVO>> listOrders(@Valid @ModelAttribute PageQuery pageQuery) {
-        return null;
+    public SingleResponse<PageResult<OrderDTO>> pageOrders(@Valid @ModelAttribute PageQuery pageQuery) {
+        PageResult<OrderDTO> pageResult = orderService.pageOrders(pageQuery.getPageNo(),
+                pageQuery.getPageSize());
+        return SingleResponse.ok(pageResult);
     }
 
-    @GetMapping("/{id}")
-    public SingleResponse<OrderVO> getOrder(@PathVariable("id") String id) {
-        return null;
+    @GetMapping("/{orderNo}")
+    public SingleResponse<OrderDTO> getOrder(@PathVariable("orderNo") String orderNo) {
+        OrderDTO orderDTO = orderService.getOrder(orderNo);
+        return SingleResponse.ok(orderDTO);
     }
 
 }

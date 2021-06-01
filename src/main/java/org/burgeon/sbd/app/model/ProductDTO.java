@@ -12,4 +12,6 @@ import org.burgeon.sbd.core.base.ProductBase;
 @EqualsAndHashCode(callSuper = false)
 public class ProductDTO extends ProductBase {
 
+    private String productNo;
+
 }
