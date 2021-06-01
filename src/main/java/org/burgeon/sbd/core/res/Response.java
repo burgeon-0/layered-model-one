@@ -1,4 +1,4 @@
-package org.burgeon.sbd.adapter.model.res;
+package org.burgeon.sbd.core.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

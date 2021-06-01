@@ -1,6 +1,4 @@
-package org.burgeon.sbd.domain;
-
-import org.springframework.beans.factory.annotation.Autowired;
+package org.burgeon.sbd.core;
 
 /**
  * @author Sam Lu
@@ -8,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DomainFactory<Entity, Key> {
 
-    @Autowired
-    private DomainRepository<Entity, Key> domainRepository;
+    protected DomainRepository<Entity, Key> domainRepository;
 
     public Entity load(Key key) {
         return domainRepository.load(key);

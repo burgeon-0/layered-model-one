@@ -1,34 +1,17 @@
 package org.burgeon.sbd.adapter.model.res.order;
 
 import lombok.Data;
-
-import java.util.Date;
-import java.util.List;
+import lombok.EqualsAndHashCode;
+import org.burgeon.sbd.core.base.OrderBase;
 
 /**
  * @author Sam Lu
  * @date 2021/5/30
  */
 @Data
-public class OrderVO {
+@EqualsAndHashCode(callSuper = false)
+public class OrderVO extends OrderBase {
 
     private String orderNo;
-    private List<Item> items;
-    private Integer totalPrice;
-    private Date placeTime;
-    private Date payTime;
-    private Date cancelTime;
-    private Date deleteTime;
-    private Integer status;
-
-    @Data
-    public static class Item {
-
-        private String productNo;
-        private String productName;
-        private Integer totalCount;
-        private Integer totalPrice;
-
-    }
 
 }

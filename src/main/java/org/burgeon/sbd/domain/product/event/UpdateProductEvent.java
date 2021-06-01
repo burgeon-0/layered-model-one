@@ -2,7 +2,8 @@ package org.burgeon.sbd.domain.product.event;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.DomainEvent;
+import org.burgeon.sbd.core.DomainEvent;
+import org.burgeon.sbd.core.base.ProductBase;
 
 /**
  * @author Sam Lu
@@ -10,11 +11,8 @@ import org.burgeon.sbd.domain.DomainEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class UpdateProductEvent extends DomainEvent {
+public class UpdateProductEvent extends ProductBase implements DomainEvent {
 
     private String productNo;
-    private String productName;
-    private Integer price;
-    private Integer stock;
 
 }

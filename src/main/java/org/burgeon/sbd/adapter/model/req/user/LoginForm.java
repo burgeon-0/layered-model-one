@@ -2,7 +2,9 @@ package org.burgeon.sbd.adapter.model.req.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.MagicObject;
+import org.burgeon.sbd.core.base.Base;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Sam Lu
@@ -10,9 +12,11 @@ import org.burgeon.sbd.domain.MagicObject;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class LoginForm extends MagicObject {
+public class LoginForm extends Base {
 
+    @NotNull
     private String username;
+    @NotNull
     private String password;
 
 }

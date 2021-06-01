@@ -2,8 +2,8 @@ package org.burgeon.sbd.adapter.api;
 
 import org.burgeon.sbd.adapter.model.req.user.LoginForm;
 import org.burgeon.sbd.adapter.model.req.user.RegisterForm;
-import org.burgeon.sbd.adapter.model.res.Response;
-import org.burgeon.sbd.adapter.model.res.SingleResponse;
+import org.burgeon.sbd.core.res.Response;
+import org.burgeon.sbd.core.res.SingleResponse;
 import org.burgeon.sbd.app.UserService;
 import org.burgeon.sbd.app.model.LoginDTO;
 import org.burgeon.sbd.app.model.RegisterDTO;
@@ -18,7 +18,7 @@ import javax.validation.Valid;
  * @author Sam Lu
  * @date 2021/5/30
  */
-@RestController
+@RestController("UserController")
 @RequestMapping(Constants.API + "/users")
 public class UserController {
 

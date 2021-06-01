@@ -2,7 +2,7 @@ package org.burgeon.sbd.domain.product.command;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.MagicObject;
+import org.burgeon.sbd.core.base.ProductBase;
 
 /**
  * @author Sam Lu
@@ -10,10 +10,6 @@ import org.burgeon.sbd.domain.MagicObject;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class UpdateProductCommand extends MagicObject {
-
-    private String productName;
-    private Integer price;
-    private Integer stock;
+public class UpdateProductCommand extends ProductBase {
 
 }

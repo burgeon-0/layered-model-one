@@ -2,7 +2,7 @@ package org.burgeon.sbd.domain.order.event;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.DomainEvent;
+import org.burgeon.sbd.core.DomainEvent;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class CancelOrderEvent extends DomainEvent {
+public class CancelOrderEvent implements DomainEvent {
 
     private String orderNo;
     private Date cancelTime;

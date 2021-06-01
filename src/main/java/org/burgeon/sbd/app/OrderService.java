@@ -6,8 +6,8 @@ import org.burgeon.sbd.domain.order.OrderAggregateFactory;
 import org.burgeon.sbd.domain.order.command.PlaceOrderCommand;
 import org.burgeon.sbd.domain.product.ProductAggregate;
 import org.burgeon.sbd.domain.product.ProductAggregateFactory;
-import org.burgeon.sbd.domain.exception.ErrorCode;
-import org.burgeon.sbd.domain.exception.ParamException;
+import org.burgeon.sbd.core.exception.ErrorCode;
+import org.burgeon.sbd.core.exception.ParamException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -36,7 +36,8 @@ public class OrderService {
         for (OrderDTO.Item item : orderDTO.getItems()) {
             ProductAggregate productAggregate = productAggregateFactory.load(item.getProductNo());
             if (productAggregate == null) {
-                throw new ParamException(ErrorCode.PRODUCT_NOT_FOUND);
+                throw new ParamException(ErrorCode.PRODUCT_NOT_FOUND,
+                        String.format("Product Not Found: %s", item.getProductNo()));
             }
             PlaceOrderCommand.Item orderItem = new PlaceOrderCommand.Item();
             orderItem.setProductAggregate(productAggregate);

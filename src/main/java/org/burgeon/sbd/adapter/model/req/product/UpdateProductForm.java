@@ -2,7 +2,7 @@ package org.burgeon.sbd.adapter.model.req.product;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.MagicObject;
+import org.burgeon.sbd.core.base.Base;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class UpdateProductForm extends MagicObject {
+public class UpdateProductForm extends Base {
 
     @NotNull
     private String productName;

@@ -2,7 +2,8 @@ package org.burgeon.sbd.domain.order.event;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.DomainEvent;
+import org.burgeon.sbd.core.DomainEvent;
+import org.burgeon.sbd.core.base.OrderItem;
 
 import java.util.Date;
 import java.util.List;
@@ -13,20 +14,11 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PlaceOrderEvent extends DomainEvent {
+public class PlaceOrderEvent implements DomainEvent {
 
     private String orderNo;
-    private List<Item> items;
+    private List<OrderItem> items;
+    private int totalPrice;
     private Date placeTime;
-
-    @Data
-    public static class Item {
-
-        private String productNo;
-        private String productName;
-        private Integer totalCount;
-        private Integer totalPrice;
-
-    }
 
 }

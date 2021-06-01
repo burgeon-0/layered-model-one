@@ -1,4 +1,4 @@
-package org.burgeon.sbd.adapter.model.req;
+package org.burgeon.sbd.core.req;
 
 import lombok.Data;
 
@@ -14,6 +14,6 @@ public class PageQuery {
     private int pageNo = 1;
     private int pageSize = 10;
     private boolean needTotal = true;
-    private List<OrderDesc> orderDescList;
+    private List<OrderDesc> orderDescs;
 
 }

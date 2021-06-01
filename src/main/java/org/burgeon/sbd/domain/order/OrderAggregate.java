@@ -1,18 +1,20 @@
 package org.burgeon.sbd.domain.order;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.burgeon.sbd.domain.*;
+import lombok.*;
+import org.burgeon.sbd.core.DomainEventBus;
+import org.burgeon.sbd.core.DomainRepository;
+import org.burgeon.sbd.core.SnKeeper;
+import org.burgeon.sbd.core.SpringBeanFactory;
+import org.burgeon.sbd.core.base.OrderBase;
+import org.burgeon.sbd.core.base.OrderItem;
 import org.burgeon.sbd.domain.order.command.PlaceOrderCommand;
 import org.burgeon.sbd.domain.order.event.CancelOrderEvent;
 import org.burgeon.sbd.domain.order.event.DeleteOrderEvent;
 import org.burgeon.sbd.domain.order.event.PayOrderEvent;
 import org.burgeon.sbd.domain.order.event.PlaceOrderEvent;
 import org.burgeon.sbd.domain.product.ProductAggregate;
-import org.burgeon.sbd.domain.exception.BizException;
-import org.burgeon.sbd.domain.exception.ErrorCode;
+import org.burgeon.sbd.core.exception.BizException;
+import org.burgeon.sbd.core.exception.ErrorCode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,40 +25,26 @@ import java.util.List;
  * @author Sam Lu
  * @date 2021/5/30
  */
-@Data
-public class OrderAggregate {
+public class OrderAggregate extends OrderBase {
 
+    @Setter
+    @Getter
     private String orderNo;
-    private int totalPrice;
-    private Date placeTime;
-    private Date payTime;
-    private Date cancelTime;
-    private Date deleteTime;
-    private int status;
 
-    @Getter(value = AccessLevel.PRIVATE)
-    @Setter(value = AccessLevel.PRIVATE)
-    private List<OrderItem> items;
-
-    @Getter(value = AccessLevel.PRIVATE)
-    @Setter(value = AccessLevel.PRIVATE)
     private DomainRepository<OrderAggregate, String> orderRepository = SpringBeanFactory.getDomainRepository(
             OrderAggregate.class, String.class);
-    @Getter(value = AccessLevel.PRIVATE)
-    @Setter(value = AccessLevel.PRIVATE)
     private DomainRepository<OrderItem, String> orderItemRepository = SpringBeanFactory.getDomainRepository(
             OrderItem.class, String.class);
-    @Getter(value = AccessLevel.PRIVATE)
-    @Setter(value = AccessLevel.PRIVATE)
     private DomainEventBus domainEventBus = SpringBeanFactory.getBean(DomainEventBus.class);
 
     public OrderAggregate(PlaceOrderCommand placeOrderCommand) {
         orderNo = generateOrderNo();
-        placeTime = new Date();
-        status = Status.UNPAID.ordinal();
+        setPlaceTime(new Date());
+        setStatus(Status.UNPAID.ordinal());
 
-        items = new ArrayList<>(placeOrderCommand.getItems().size());
-        List<PlaceOrderEvent.Item> eventOrderItems = new ArrayList<>(placeOrderCommand.getItems().size());
+        setItems(new ArrayList<>(placeOrderCommand.getItems().size()));
+        List<OrderItem> eventOrderItems = new ArrayList<>(placeOrderCommand.getItems().size());
+        int totalPrice = 0;
         for (PlaceOrderCommand.Item item : placeOrderCommand.getItems()) {
             ProductAggregate productAggregate = item.getProductAggregate();
             if (!productAggregate.stockEnough(item.getCount())) {
@@ -70,51 +58,53 @@ public class OrderAggregate {
             orderItem.setTotalCount(item.getCount());
             orderItem.setTotalPrice(productAggregate.getPrice() * item.getCount());
             totalPrice += orderItem.getTotalPrice();
-            items.add(orderItem);
+            getItems().add(orderItem);
 
-            PlaceOrderEvent.Item eventOrderItem = orderItem.to(PlaceOrderEvent.Item.class);
+            OrderItem eventOrderItem = orderItem.to(OrderItem.class);
             eventOrderItems.add(eventOrderItem);
         }
-        orderItemRepository.save(items);
+        setTotalPrice(totalPrice);
+        orderItemRepository.save(getItems());
         orderRepository.save(this);
 
         PlaceOrderEvent placeOrderEvent = new PlaceOrderEvent();
         placeOrderEvent.setOrderNo(orderNo);
         placeOrderEvent.setItems(eventOrderItems);
-        placeOrderEvent.setPlaceTime(placeTime);
+        placeOrderEvent.setTotalPrice(totalPrice);
+        placeOrderEvent.setPlaceTime(getPlaceTime());
         domainEventBus.publishEvent(placeOrderEvent);
     }
 
     public void pay() {
-        payTime = new Date();
-        status = Status.PAID.ordinal();
+        setPayTime(new Date());
+        setStatus(Status.PAID.ordinal());
         orderRepository.save(this);
 
         PayOrderEvent payOrderEvent = new PayOrderEvent();
         payOrderEvent.setOrderNo(orderNo);
-        payOrderEvent.setPayTime(payTime);
+        payOrderEvent.setPayTime(getPayTime());
         domainEventBus.publishEvent(payOrderEvent);
     }
 
     public void cancel() {
-        cancelTime = new Date();
-        status = Status.CANCELLED.ordinal();
+        setCancelTime(new Date());
+        setStatus(Status.CANCELLED.ordinal());
         orderRepository.save(this);
 
         CancelOrderEvent cancelOrderEvent = new CancelOrderEvent();
         cancelOrderEvent.setOrderNo(orderNo);
-        cancelOrderEvent.setCancelTime(cancelTime);
+        cancelOrderEvent.setCancelTime(getCancelTime());
         domainEventBus.publishEvent(cancelOrderEvent);
     }
 
     public void delete() {
-        deleteTime = new Date();
-        status = Status.DELETED.ordinal();
+        setDeleteTime(new Date());
+        setStatus(Status.DELETED.ordinal());
         orderRepository.save(this);
 
         DeleteOrderEvent deleteOrderEvent = new DeleteOrderEvent();
         deleteOrderEvent.setOrderNo(orderNo);
-        deleteOrderEvent.setDeleteTime(deleteTime);
+        deleteOrderEvent.setDeleteTime(getDeleteTime());
         domainEventBus.publishEvent(deleteOrderEvent);
     }
 

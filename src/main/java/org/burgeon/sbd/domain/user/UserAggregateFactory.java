@@ -1,6 +1,7 @@
 package org.burgeon.sbd.domain.user;
 
-import org.burgeon.sbd.domain.DomainFactory;
+import org.burgeon.sbd.core.DomainFactory;
+import org.burgeon.sbd.core.SpringBeanFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,5 +10,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserAggregateFactory extends DomainFactory<UserAggregate, String> {
+
+    @Override
+    public UserAggregate load(String username) {
+        domainRepository = SpringBeanFactory.getDomainRepository(UserAggregate.class, String.class);
+        return super.load(username);
+    }
 
 }

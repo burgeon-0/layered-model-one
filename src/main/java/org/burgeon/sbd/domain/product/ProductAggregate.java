@@ -1,10 +1,8 @@
 package org.burgeon.sbd.domain.product;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.burgeon.sbd.domain.*;
+import lombok.*;
+import org.burgeon.sbd.core.*;
+import org.burgeon.sbd.core.base.ProductBase;
 import org.burgeon.sbd.domain.product.command.CreateProductCommand;
 import org.burgeon.sbd.domain.product.command.UpdateProductCommand;
 import org.burgeon.sbd.domain.product.event.CreateProductEvent;
@@ -18,24 +16,18 @@ import java.util.Date;
  * @author Sam Lu
  * @date 2021/5/30
  */
-@Data
-public class ProductAggregate {
+public class ProductAggregate extends ProductBase {
 
+    @Setter
+    @Getter
     private String productNo;
-    private String productName;
-    private int price;
-    private int stock;
+    @Setter
+    @Getter
     private boolean deleted;
 
-    @Getter(value = AccessLevel.PRIVATE)
-    @Setter(value = AccessLevel.PRIVATE)
     private Copyable copyable = SpringBeanFactory.getBean(Copyable.class);
-    @Getter(value = AccessLevel.PRIVATE)
-    @Setter(value = AccessLevel.PRIVATE)
     private DomainRepository<ProductAggregate, String> productRepository = SpringBeanFactory.getDomainRepository(
             ProductAggregate.class, String.class);
-    @Getter(value = AccessLevel.PRIVATE)
-    @Setter(value = AccessLevel.PRIVATE)
     private DomainEventBus domainEventBus = SpringBeanFactory.getBean(DomainEventBus.class);
 
     public ProductAggregate(CreateProductCommand createProductCommand) {
@@ -67,7 +59,7 @@ public class ProductAggregate {
     }
 
     public boolean stockEnough(int count) {
-        return stock >= count;
+        return getStock() >= count;
     }
 
     private String generateProductNo() {

@@ -1,6 +1,6 @@
 package org.burgeon.sbd.infra.common;
 
-import org.burgeon.sbd.domain.Copyable;
+import org.burgeon.sbd.core.Copyable;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 

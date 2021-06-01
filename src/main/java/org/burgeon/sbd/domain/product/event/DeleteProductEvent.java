@@ -2,7 +2,7 @@ package org.burgeon.sbd.domain.product.event;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.DomainEvent;
+import org.burgeon.sbd.core.DomainEvent;
 
 /**
  * @author Sam Lu
@@ -10,7 +10,7 @@ import org.burgeon.sbd.domain.DomainEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class DeleteProductEvent extends DomainEvent {
+public class DeleteProductEvent implements DomainEvent {
 
     private String productNo;
 

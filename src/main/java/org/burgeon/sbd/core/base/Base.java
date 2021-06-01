@@ -1,4 +1,7 @@
-package org.burgeon.sbd.domain;
+package org.burgeon.sbd.core.base;
+
+import org.burgeon.sbd.core.Copyable;
+import org.burgeon.sbd.core.SpringBeanFactory;
 
 import java.io.Serializable;
 
@@ -6,7 +9,7 @@ import java.io.Serializable;
  * @author Sam Lu
  * @date 2021/5/30
  */
-public class MagicObject implements Serializable {
+public class Base implements Serializable {
 
     public <T> T to(Class<T> tClass) {
         T target = null;

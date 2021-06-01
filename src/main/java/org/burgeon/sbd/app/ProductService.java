@@ -5,8 +5,8 @@ import org.burgeon.sbd.domain.product.command.CreateProductCommand;
 import org.burgeon.sbd.domain.product.ProductAggregate;
 import org.burgeon.sbd.domain.product.command.UpdateProductCommand;
 import org.burgeon.sbd.domain.product.ProductAggregateFactory;
-import org.burgeon.sbd.domain.exception.ErrorCode;
-import org.burgeon.sbd.domain.exception.ParamException;
+import org.burgeon.sbd.core.exception.ErrorCode;
+import org.burgeon.sbd.core.exception.ParamException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

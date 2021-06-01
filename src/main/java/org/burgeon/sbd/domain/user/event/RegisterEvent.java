@@ -2,7 +2,8 @@ package org.burgeon.sbd.domain.user.event;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.DomainEvent;
+import org.burgeon.sbd.core.DomainEvent;
+import org.burgeon.sbd.core.base.UserBase;
 
 /**
  * @author Sam Lu
@@ -10,10 +11,8 @@ import org.burgeon.sbd.domain.DomainEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class RegisterEvent extends DomainEvent {
+public class RegisterEvent extends UserBase implements DomainEvent {
 
     private String userId;
-    private String username;
-    private String password;
 
 }

@@ -2,7 +2,7 @@ package org.burgeon.sbd.app.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.MagicObject;
+import org.burgeon.sbd.core.base.UserBase;
 
 /**
  * @author Sam Lu
@@ -10,9 +10,6 @@ import org.burgeon.sbd.domain.MagicObject;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class LoginDTO extends MagicObject {
-
-    private String username;
-    private String password;
+public class LoginDTO extends UserBase {
 
 }

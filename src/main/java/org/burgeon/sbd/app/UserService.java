@@ -2,8 +2,8 @@ package org.burgeon.sbd.app;
 
 import org.burgeon.sbd.app.model.LoginDTO;
 import org.burgeon.sbd.app.model.RegisterDTO;
-import org.burgeon.sbd.domain.exception.ErrorCode;
-import org.burgeon.sbd.domain.exception.ParamException;
+import org.burgeon.sbd.core.exception.ErrorCode;
+import org.burgeon.sbd.core.exception.ParamException;
 import org.burgeon.sbd.domain.user.UserAggregate;
 import org.burgeon.sbd.domain.user.UserAggregateFactory;
 import org.burgeon.sbd.domain.user.command.LoginCommand;

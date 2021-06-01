@@ -1,4 +1,4 @@
-package org.burgeon.sbd.domain;
+package org.burgeon.sbd.core;
 
 /**
  * @author Sam Lu

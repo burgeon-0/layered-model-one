@@ -1,12 +1,12 @@
 package org.burgeon.sbd.adapter.api.admin;
 
-import org.burgeon.sbd.adapter.model.req.PageQuery;
+import org.burgeon.sbd.core.req.PageQuery;
 import org.burgeon.sbd.adapter.model.req.product.CreateProductForm;
 import org.burgeon.sbd.adapter.model.req.product.UpdateProductForm;
-import org.burgeon.sbd.adapter.model.res.MultiResponse;
-import org.burgeon.sbd.adapter.model.res.PageResult;
-import org.burgeon.sbd.adapter.model.res.Response;
-import org.burgeon.sbd.adapter.model.res.SingleResponse;
+import org.burgeon.sbd.core.res.MultiResponse;
+import org.burgeon.sbd.core.res.PageResult;
+import org.burgeon.sbd.core.res.Response;
+import org.burgeon.sbd.core.res.SingleResponse;
 import org.burgeon.sbd.adapter.model.res.product.ProductVO;
 import org.burgeon.sbd.app.ProductService;
 import org.burgeon.sbd.app.model.ProductDTO;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
  * @author Sam Lu
  * @date 2021/5/30
  */
-@RestController
+@RestController("AdminProductController")
 @RequestMapping(Constants.API_ADMIN + "/products")
 public class ProductController {
 

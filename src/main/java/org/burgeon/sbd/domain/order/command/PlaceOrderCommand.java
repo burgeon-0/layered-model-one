@@ -2,7 +2,7 @@ package org.burgeon.sbd.domain.order.command;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.domain.MagicObject;
+import org.burgeon.sbd.core.base.Base;
 import org.burgeon.sbd.domain.product.ProductAggregate;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PlaceOrderCommand extends MagicObject {
+public class PlaceOrderCommand extends Base {
 
     private List<Item> items;
 

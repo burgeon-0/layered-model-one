@@ -1,4 +1,4 @@
-package org.burgeon.sbd.domain.exception;
+package org.burgeon.sbd.core.exception;
 
 import org.springframework.http.HttpStatus;
 

@@ -1,14 +1,15 @@
-package org.burgeon.sbd.domain.order;
+package org.burgeon.sbd.core.base;
 
 import lombok.Data;
-import org.burgeon.sbd.domain.MagicObject;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Sam Lu
  * @date 2021/5/31
  */
 @Data
-public class OrderItem extends MagicObject {
+@EqualsAndHashCode(callSuper = false)
+public class OrderItem extends Base {
 
     private String orderNo;
     private String productNo;

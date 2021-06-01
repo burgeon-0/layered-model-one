@@ -1,4 +1,4 @@
-package org.burgeon.sbd.domain;
+package org.burgeon.sbd.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
