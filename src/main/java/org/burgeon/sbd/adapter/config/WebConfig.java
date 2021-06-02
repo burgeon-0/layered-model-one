@@ -1,4 +1,4 @@
-package org.burgeon.sbd.infra.config;
+package org.burgeon.sbd.adapter.config;
 
 import org.burgeon.sbd.adapter.common.resolver.CamelCaseToSnakeCaseResolver;
 import org.springframework.context.annotation.Configuration;

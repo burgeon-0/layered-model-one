@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.burgeon.sbd.core.exception.BaseException;
 import org.burgeon.sbd.core.exception.ErrorCode;
 import org.burgeon.sbd.core.res.Response;
+import org.burgeon.sbd.infra.utils.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -30,24 +31,6 @@ public class GlobalExceptionHandler {
     private static final String JSON_PARSE_ERROR_CCI = "Cannot construct instance";
     private static final String JSON_PARSE_ERROR_CDV = "Cannot deserialize value";
     private static final String JSON_PARSE_ERROR_UC = "Unexpected character";
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        StringBuilder buf = new StringBuilder();
-        List<ObjectError> errors = e.getAllErrors();
-        for (ObjectError error : errors) {
-            if (error instanceof FieldError) {
-                buf.append("[").append(((FieldError) error).getField()).append("] ");
-                buf.append(error.getDefaultMessage()).append("; ");
-            } else {
-                log.warn("Method Argument Not Valid Error: {}", error.toString());
-            }
-        }
-        String message = buf.substring(0, buf.length() - 2);
-        return new Response(ErrorCode.PARAM_INVALID.getCode(), message);
-    }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -84,12 +67,38 @@ public class GlobalExceptionHandler {
         return new Response(ErrorCode.PARAM_INVALID.getCode(), message);
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        List<ObjectError> errors = e.getAllErrors();
+        String message = getErrorMessage(errors);
+        return new Response(ErrorCode.PARAM_INVALID.getCode(), message);
+    }
+
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Response handleBindException(BindException e) {
         log.warn("Bind Exception -> {}: {}", e.getClass().getName(), e.getMessage());
-        return new Response(ErrorCode.PARAM_INVALID.getCode(), e.getMessage());
+        String message = getErrorMessage(e.getAllErrors());
+        return new Response(ErrorCode.PARAM_INVALID.getCode(), message);
+    }
+
+    private String getErrorMessage(List<ObjectError> errors) {
+        StringBuilder buf = new StringBuilder();
+        for (ObjectError error : errors) {
+            if (error instanceof FieldError) {
+                String fieldName = ((FieldError) error).getField();
+                fieldName = StringUtils.camelCaseToSnakeCase(fieldName);
+                buf.append("[").append(fieldName).append("] ");
+                buf.append(error.getDefaultMessage()).append("; ");
+            } else {
+                log.warn("Method Argument Not Valid Error: {}", error.toString());
+            }
+        }
+        String message = buf.substring(0, buf.length() - 2);
+        return message;
     }
 
     @ExceptionHandler(ServletException.class)

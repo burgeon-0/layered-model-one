@@ -1,38 +1,35 @@
 package org.burgeon.sbd.adapter.common.resolver;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanInstantiationException;
+import org.burgeon.sbd.core.exception.ErrorCode;
+import org.burgeon.sbd.core.exception.ParamException;
+import org.burgeon.sbd.infra.utils.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.*;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.SmartValidator;
 import org.springframework.validation.annotation.ValidationAnnotationUtils;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.bind.support.WebRequestDataBinder;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.annotation.ModelFactory;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
-import org.springframework.web.multipart.support.StandardServletPartUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * 不能与@RequestBody，@ModelAttribute一起使用，使用了Spring参数注解会优先使用Spring的参数解析器
+ * 1. 不能与@RequestBody、@ModelAttribute一起使用，如果使用了Spring的参数注解，Spring会优先使用Spring的参数解析器；<br/>
+ * 2. 本类改造自解析ModelAttribute的ModelAttributeMethodProcessor。
  *
  * @author Sam Lu
  * @date 2021/6/2
@@ -60,15 +57,10 @@ public class CamelCaseToSnakeCaseResolver implements HandlerMethodArgumentResolv
     public final Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
                                         NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
 
-        Assert.state(mavContainer != null, "ModelAttributeMethodProcessor requires ModelAndViewContainer");
-        Assert.state(binderFactory != null, "ModelAttributeMethodProcessor requires WebDataBinderFactory");
+        Assert.state(mavContainer != null, "CamelCaseToSnakeCaseResolver requires ModelAndViewContainer");
+        Assert.state(binderFactory != null, "CamelCaseToSnakeCaseResolver requires WebDataBinderFactory");
 
         String name = ModelFactory.getNameForParameter(parameter);
-        ModelAttribute ann = parameter.getParameterAnnotation(ModelAttribute.class);
-        if (ann != null) {
-            mavContainer.setBinding(name, ann.binding());
-        }
-
         Object attribute = null;
         BindingResult bindingResult = null;
 
@@ -98,9 +90,6 @@ public class CamelCaseToSnakeCaseResolver implements HandlerMethodArgumentResolv
             // skipped in case of binding failure on construction.
             WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name);
             if (binder.getTarget() != null) {
-                if (!mavContainer.isBindingDisabled(name)) {
-                    bindRequestParameters(binder, webRequest);
-                }
                 validateIfApplicable(binder, parameter);
                 if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
                     throw new BindException(binder.getBindingResult());
@@ -174,123 +163,29 @@ public class CamelCaseToSnakeCaseResolver implements HandlerMethodArgumentResolv
     @SuppressWarnings("serial")
     protected Object constructAttribute(Constructor<?> ctor, String attributeName, MethodParameter parameter,
                                         WebDataBinderFactory binderFactory, NativeWebRequest webRequest) throws Exception {
-
-        if (ctor.getParameterCount() == 0) {
-            // A single default constructor -> clearly a standard JavaBeans arrangement.
-            return BeanUtils.instantiateClass(ctor);
+        Object object = BeanUtils.instantiateClass(ctor);
+        BeanWrapper src = new BeanWrapperImpl(object);
+        PropertyDescriptor[] pds = src.getPropertyDescriptors();
+        Set<String> paramsSet = new HashSet<>(pds.length);
+        for (PropertyDescriptor pd : pds) {
+            paramsSet.add(pd.getName());
         }
 
-        // A single data class constructor -> resolve constructor arguments from request parameters.
-        String[] paramNames = BeanUtils.getParameterNames(ctor);
-        Class<?>[] paramTypes = ctor.getParameterTypes();
-        Object[] args = new Object[paramTypes.length];
-        WebDataBinder binder = binderFactory.createBinder(webRequest, null, attributeName);
-        String fieldDefaultPrefix = binder.getFieldDefaultPrefix();
-        String fieldMarkerPrefix = binder.getFieldMarkerPrefix();
-        boolean bindingFailure = false;
-        Set<String> failedParams = new HashSet<>(4);
-
-        for (int i = 0; i < paramNames.length; i++) {
-            String paramName = paramNames[i];
-            Class<?> paramType = paramTypes[i];
-            Object value = webRequest.getParameterValues(paramName);
-
-            // Since WebRequest#getParameter exposes a single-value parameter as an array
-            // with a single element, we unwrap the single value in such cases, analogous
-            // to WebExchangeDataBinder.addBindValue(Map<String, Object>, String, List<?>).
-            if (ObjectUtils.isArray(value) && Array.getLength(value) == 1) {
-                value = Array.get(value, 0);
-            }
-
-            if (value == null) {
-                if (fieldDefaultPrefix != null) {
-                    value = webRequest.getParameter(fieldDefaultPrefix + paramName);
-                }
-                if (value == null) {
-                    if (fieldMarkerPrefix != null && webRequest.getParameter(fieldMarkerPrefix + paramName) != null) {
-                        value = binder.getEmptyValue(paramType);
-                    } else {
-                        value = resolveConstructorArgument(paramName, paramType, webRequest);
-                    }
-                }
-            }
-
-            try {
-                MethodParameter methodParam = new FieldAwareConstructorParameter(ctor, i, paramName);
-                if (value == null && methodParam.isOptional()) {
-                    args[i] = (methodParam.getParameterType() == Optional.class ? Optional.empty() : null);
-                } else {
-                    args[i] = binder.convertIfNecessary(value, paramType, methodParam);
-                }
-            } catch (TypeMismatchException ex) {
-                ex.initPropertyName(paramName);
-                args[i] = null;
-                failedParams.add(paramName);
-                binder.getBindingResult().recordFieldValue(paramName, paramType, value);
-                binder.getBindingErrorProcessor().processPropertyAccessException(ex, binder.getBindingResult());
-                bindingFailure = true;
-            }
-        }
-
-        if (bindingFailure) {
-            BindingResult result = binder.getBindingResult();
-            for (int i = 0; i < paramNames.length; i++) {
-                String paramName = paramNames[i];
-                if (!failedParams.contains(paramName)) {
-                    Object value = args[i];
-                    result.recordFieldValue(paramName, paramTypes[i], value);
-                    validateValueIfApplicable(binder, parameter, ctor.getDeclaringClass(), paramName, value);
-                }
-            }
-            if (!parameter.isOptional()) {
+        Iterator<String> paramNames = webRequest.getParameterNames();
+        while (paramNames.hasNext()) {
+            String paramName = paramNames.next();
+            Object paramVal = webRequest.getParameter(paramName);
+            String newParamName = StringUtils.snakeCaseToCamelCase(paramName);
+            if (paramsSet.contains(newParamName)) {
                 try {
-                    Object target = BeanUtils.instantiateClass(ctor, args);
-                    throw new BindException(result) {
-                        @Override
-                        public Object getTarget() {
-                            return target;
-                        }
-                    };
-                } catch (BeanInstantiationException ex) {
-                    // swallow and proceed without target instance
-                }
-            }
-            throw new BindException(result);
-        }
-
-        return BeanUtils.instantiateClass(ctor, args);
-    }
-
-    /**
-     * Extension point to bind the request to the target object.
-     *
-     * @param binder the data binder instance to use for the binding
-     * @param request the current request
-     */
-    protected void bindRequestParameters(WebDataBinder binder, NativeWebRequest request) {
-        ((WebRequestDataBinder) binder).bind(request);
-    }
-
-    @Nullable
-    public Object resolveConstructorArgument(String paramName, Class<?> paramType, NativeWebRequest request)
-            throws Exception {
-
-        MultipartRequest multipartRequest = request.getNativeRequest(MultipartRequest.class);
-        if (multipartRequest != null) {
-            List<MultipartFile> files = multipartRequest.getFiles(paramName);
-            if (!files.isEmpty()) {
-                return (files.size() == 1 ? files.get(0) : files);
-            }
-        } else if (StringUtils.startsWithIgnoreCase(request.getHeader("Content-Type"), "multipart/")) {
-            HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
-            if (servletRequest != null) {
-                List<Part> parts = StandardServletPartUtils.getParts(servletRequest, paramName);
-                if (!parts.isEmpty()) {
-                    return (parts.size() == 1 ? parts.get(0) : parts);
+                    src.setPropertyValue(newParamName, paramVal);
+                } catch (Exception e) {
+                    throw new ParamException(ErrorCode.PARAM_INVALID,
+                            String.format("The Param [%s] Is Invalid", paramName));
                 }
             }
         }
-        return null;
+        return object;
     }
 
     /**
@@ -309,42 +204,6 @@ public class CamelCaseToSnakeCaseResolver implements HandlerMethodArgumentResolv
             Object[] validationHints = ValidationAnnotationUtils.determineValidationHints(ann);
             if (validationHints != null) {
                 binder.validate(validationHints);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Validate the specified candidate value if applicable.
-     * <p>The default implementation checks for {@code @javax.validation.Valid},
-     * Spring's {@link org.springframework.validation.annotation.Validated},
-     * and custom annotations whose name starts with "Valid".
-     *
-     * @param binder the DataBinder to be used
-     * @param parameter the method parameter declaration
-     * @param targetType the target type
-     * @param fieldName the name of the field
-     * @param value the candidate value
-     * @see #validateIfApplicable(WebDataBinder, MethodParameter)
-     * @see SmartValidator#validateValue(Class, String, Object, Errors, Object...)
-     * @since 5.1
-     */
-    protected void validateValueIfApplicable(WebDataBinder binder, MethodParameter parameter,
-                                             Class<?> targetType, String fieldName, @Nullable Object value) {
-
-        for (Annotation ann : parameter.getParameterAnnotations()) {
-            Object[] validationHints = ValidationAnnotationUtils.determineValidationHints(ann);
-            if (validationHints != null) {
-                for (Validator validator : binder.getValidators()) {
-                    if (validator instanceof SmartValidator) {
-                        try {
-                            ((SmartValidator) validator).validateValue(targetType, fieldName, value,
-                                    binder.getBindingResult(), validationHints);
-                        } catch (IllegalArgumentException ex) {
-                            // No corresponding field on the target class...
-                        }
-                    }
-                }
                 break;
             }
         }
@@ -375,63 +234,6 @@ public class CamelCaseToSnakeCaseResolver implements HandlerMethodArgumentResolv
         Class<?>[] paramTypes = parameter.getExecutable().getParameterTypes();
         boolean hasBindingResult = (paramTypes.length > (i + 1) && Errors.class.isAssignableFrom(paramTypes[i + 1]));
         return !hasBindingResult;
-    }
-
-    /**
-     * {@link MethodParameter} subclass which detects field annotations as well.
-     *
-     * @since 5.1
-     */
-    private static class FieldAwareConstructorParameter extends MethodParameter {
-
-        private final String parameterName;
-
-        @Nullable
-        private volatile Annotation[] combinedAnnotations;
-
-        public FieldAwareConstructorParameter(Constructor<?> constructor, int parameterIndex, String parameterName) {
-            super(constructor, parameterIndex);
-            this.parameterName = parameterName;
-        }
-
-        @Override
-        public Annotation[] getParameterAnnotations() {
-            Annotation[] anns = this.combinedAnnotations;
-            if (anns == null) {
-                anns = super.getParameterAnnotations();
-                try {
-                    Field field = getDeclaringClass().getDeclaredField(this.parameterName);
-                    Annotation[] fieldAnns = field.getAnnotations();
-                    if (fieldAnns.length > 0) {
-                        List<Annotation> merged = new ArrayList<>(anns.length + fieldAnns.length);
-                        merged.addAll(Arrays.asList(anns));
-                        for (Annotation fieldAnn : fieldAnns) {
-                            boolean existingType = false;
-                            for (Annotation ann : anns) {
-                                if (ann.annotationType() == fieldAnn.annotationType()) {
-                                    existingType = true;
-                                    break;
-                                }
-                            }
-                            if (!existingType) {
-                                merged.add(fieldAnn);
-                            }
-                        }
-                        anns = merged.toArray(new Annotation[0]);
-                    }
-                } catch (NoSuchFieldException | SecurityException ex) {
-                    // ignore
-                }
-                this.combinedAnnotations = anns;
-            }
-            return anns;
-        }
-
-        @Override
-        public String getParameterName() {
-            return this.parameterName;
-        }
-
     }
 
 }
