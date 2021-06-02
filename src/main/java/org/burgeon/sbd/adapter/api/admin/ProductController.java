@@ -2,10 +2,11 @@ package org.burgeon.sbd.adapter.api.admin;
 
 import org.burgeon.sbd.adapter.model.req.product.CreateProductForm;
 import org.burgeon.sbd.adapter.model.req.product.UpdateProductForm;
+import org.burgeon.sbd.adapter.model.res.product.ProductVO;
 import org.burgeon.sbd.app.ProductService;
-import org.burgeon.sbd.app.model.CreateProductDTO;
-import org.burgeon.sbd.app.model.ProductDTO;
-import org.burgeon.sbd.app.model.UpdateProductDTO;
+import org.burgeon.sbd.app.model.product.CreateProductDTO;
+import org.burgeon.sbd.app.model.product.ProductDTO;
+import org.burgeon.sbd.app.model.product.UpdateProductDTO;
 import org.burgeon.sbd.core.req.PageQuery;
 import org.burgeon.sbd.core.res.PageResult;
 import org.burgeon.sbd.core.res.Response;
@@ -33,7 +34,7 @@ public class ProductController {
     public SingleResponse<String> createProduct(@Valid @RequestBody CreateProductForm createProductForm) {
         CreateProductDTO createProductDTO = createProductForm.to(CreateProductDTO.class);
         String productNo = productService.createProduct(createProductDTO);
-        return SingleResponse.createSuccess(productNo);
+        return SingleResponse.created(productNo);
     }
 
     @PutMapping("/{productNo}")
@@ -51,16 +52,18 @@ public class ProductController {
     }
 
     @GetMapping
-    public SingleResponse<PageResult<ProductDTO>> listProducts(@Valid @ModelAttribute PageQuery pageQuery) {
+    public SingleResponse<PageResult<ProductVO>> pageProducts(@Valid @ModelAttribute PageQuery pageQuery) {
         PageResult<ProductDTO> pageResult = productService.pageProducts(pageQuery.getPageNo(),
                 pageQuery.getPageSize());
-        return SingleResponse.ok(pageResult);
+        PageResult<ProductVO> voPageResult = pageResult.to(PageResult.class);
+        return SingleResponse.ok(voPageResult);
     }
 
     @GetMapping("/{productNo}")
-    public SingleResponse<ProductDTO> getProduct(@PathVariable("productNo") String productNo) {
+    public SingleResponse<ProductVO> getProduct(@PathVariable("productNo") String productNo) {
         ProductDTO productDTO = productService.getProduct(productNo);
-        return SingleResponse.ok(productDTO);
+        ProductVO productVO = productDTO.to(ProductVO.class);
+        return SingleResponse.ok(productVO);
     }
 
 }

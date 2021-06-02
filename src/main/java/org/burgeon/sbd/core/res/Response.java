@@ -23,7 +23,7 @@ public class Response implements Serializable {
         return new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase());
     }
 
-    public static Response createSuccess() {
+    public static Response created() {
         return new Response(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase());
     }
 

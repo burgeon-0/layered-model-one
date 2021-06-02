@@ -7,5 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * @author Sam Lu
  * @date 2021/6/1
  */
-public interface OrderItemRepository extends PagingAndSortingRepository<OrderItemEntity, String> {
+public interface OrderItemEntityRepository extends PagingAndSortingRepository<OrderItemEntity, String> {
 }

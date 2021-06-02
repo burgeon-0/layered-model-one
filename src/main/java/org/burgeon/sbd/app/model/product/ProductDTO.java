@@ -1,8 +1,7 @@
-package org.burgeon.sbd.domain.product.event;
+package org.burgeon.sbd.app.model.product;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.core.DomainEvent;
 import org.burgeon.sbd.core.base.ProductBaseModel;
 
 /**
@@ -11,7 +10,7 @@ import org.burgeon.sbd.core.base.ProductBaseModel;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class UpdateProductEvent extends ProductBaseModel implements DomainEvent {
+public class ProductDTO extends ProductBaseModel {
 
     private String productNo;
 

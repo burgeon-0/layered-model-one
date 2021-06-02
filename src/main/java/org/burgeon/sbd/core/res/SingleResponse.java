@@ -26,7 +26,7 @@ public class SingleResponse<T> extends Response {
         return response;
     }
 
-    public static SingleResponse createSuccess(Object data) {
+    public static SingleResponse created(Object data) {
         SingleResponse response = new SingleResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase());
         response.setData(data);
         return response;

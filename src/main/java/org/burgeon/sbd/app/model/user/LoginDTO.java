@@ -1,8 +1,8 @@
-package org.burgeon.sbd.app.model;
+package org.burgeon.sbd.app.model.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.core.base.UserBase;
+import org.burgeon.sbd.core.base.UserBaseModel;
 
 /**
  * @author Sam Lu
@@ -10,6 +10,6 @@ import org.burgeon.sbd.core.base.UserBase;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class RegisterDTO extends UserBase {
+public class LoginDTO extends UserBaseModel {
 
 }

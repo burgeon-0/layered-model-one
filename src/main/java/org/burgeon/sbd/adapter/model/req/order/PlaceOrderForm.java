@@ -2,8 +2,9 @@ package org.burgeon.sbd.adapter.model.req.order;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.core.base.Base;
+import org.burgeon.sbd.core.base.BaseModel;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PlaceOrderForm extends Base {
+public class PlaceOrderForm extends BaseModel {
 
     @NotNull
     private List<Item> items;
@@ -24,6 +25,7 @@ public class PlaceOrderForm extends Base {
         @NotNull
         private String productNo;
         @NotNull
+        @Min(1)
         private Integer count;
 
     }

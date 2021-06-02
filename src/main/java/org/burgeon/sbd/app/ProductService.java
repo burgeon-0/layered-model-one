@@ -1,8 +1,8 @@
 package org.burgeon.sbd.app;
 
-import org.burgeon.sbd.app.model.CreateProductDTO;
-import org.burgeon.sbd.app.model.ProductDTO;
-import org.burgeon.sbd.app.model.UpdateProductDTO;
+import org.burgeon.sbd.app.model.product.CreateProductDTO;
+import org.burgeon.sbd.app.model.product.ProductDTO;
+import org.burgeon.sbd.app.model.product.UpdateProductDTO;
 import org.burgeon.sbd.core.exception.ErrorCode;
 import org.burgeon.sbd.core.exception.ParamException;
 import org.burgeon.sbd.core.res.PageResult;

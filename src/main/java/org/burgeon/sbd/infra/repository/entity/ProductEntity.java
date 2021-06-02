@@ -1,17 +1,23 @@
 package org.burgeon.sbd.infra.repository.entity;
 
-import org.burgeon.sbd.core.base.Base;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.burgeon.sbd.core.base.BaseModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * @author Sam Lu
  * @date 2021/5/31
  */
-@Entity(name = "product")
-public class ProductEntity extends Base {
+@Data
+@Entity
+@Table(name = "t_product")
+@EqualsAndHashCode(callSuper = false)
+public class ProductEntity extends BaseModel {
 
     @Id
     @Column(name = "product_no")
@@ -25,5 +31,8 @@ public class ProductEntity extends Base {
 
     @Column(name = "stock")
     private Integer stock;
+
+    @Column(name = "deleted")
+    private Boolean deleted;
 
 }

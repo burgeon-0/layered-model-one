@@ -2,7 +2,7 @@ package org.burgeon.sbd.adapter.model.req.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.core.base.Base;
+import org.burgeon.sbd.core.base.BaseModel;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class RegisterForm extends Base {
+public class RegisterForm extends BaseModel {
 
     @NotNull
     private String username;

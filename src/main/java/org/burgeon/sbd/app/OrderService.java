@@ -1,7 +1,7 @@
 package org.burgeon.sbd.app;
 
-import org.burgeon.sbd.app.model.OrderDTO;
-import org.burgeon.sbd.app.model.PlaceOrderDTO;
+import org.burgeon.sbd.app.model.order.OrderDTO;
+import org.burgeon.sbd.app.model.order.PlaceOrderDTO;
 import org.burgeon.sbd.core.res.PageResult;
 import org.burgeon.sbd.domain.order.OrderAggregate;
 import org.burgeon.sbd.domain.order.OrderAggregateFactory;

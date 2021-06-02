@@ -1,17 +1,23 @@
 package org.burgeon.sbd.infra.repository.entity;
 
-import org.burgeon.sbd.core.base.Base;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.burgeon.sbd.core.base.BaseModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * @author Sam Lu
  * @date 2021/5/31
  */
-@Entity(name = "user")
-public class UserEntity extends Base {
+@Data
+@Entity
+@Table(name = "t_user")
+@EqualsAndHashCode(callSuper = false)
+public class UserEntity extends BaseModel {
 
     @Id
     @Column(name = "user_id")

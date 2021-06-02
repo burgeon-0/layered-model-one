@@ -9,10 +9,9 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ProductBase extends Base {
+public class UserBaseModel extends BaseModel {
 
-    private String productName;
-    private Integer price;
-    private Integer stock;
+    private String username;
+    private String password;
 
 }

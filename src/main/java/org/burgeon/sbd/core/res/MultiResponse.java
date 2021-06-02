@@ -28,4 +28,10 @@ public class MultiResponse<T> extends Response {
         return response;
     }
 
+    public static MultiResponse created(Collection data) {
+        MultiResponse response = new MultiResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED.getReasonPhrase());
+        response.setData(data);
+        return response;
+    }
+
 }

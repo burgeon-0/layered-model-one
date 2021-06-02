@@ -1,8 +1,8 @@
-package org.burgeon.sbd.app.model;
+package org.burgeon.sbd.adapter.model.res.product;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.core.base.ProductBase;
+import org.burgeon.sbd.core.base.ProductBaseModel;
 
 /**
  * @author Sam Lu
@@ -10,7 +10,7 @@ import org.burgeon.sbd.core.base.ProductBase;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ProductDTO extends ProductBase {
+public class ProductVO extends ProductBaseModel {
 
     private String productNo;
 

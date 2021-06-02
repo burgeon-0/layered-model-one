@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class OrderItem extends Base {
+public class OrderItem extends BaseModel {
 
     private String orderNo;
     private String productNo;

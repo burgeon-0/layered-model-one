@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class OrderBase extends Base {
+public class OrderBaseModel extends BaseModel {
 
     private List<OrderItem> items;
     private Integer totalPrice;

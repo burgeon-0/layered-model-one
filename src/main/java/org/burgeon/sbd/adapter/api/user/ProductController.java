@@ -1,7 +1,8 @@
 package org.burgeon.sbd.adapter.api.user;
 
+import org.burgeon.sbd.adapter.model.res.product.ProductVO;
 import org.burgeon.sbd.app.ProductService;
-import org.burgeon.sbd.app.model.ProductDTO;
+import org.burgeon.sbd.app.model.product.ProductDTO;
 import org.burgeon.sbd.core.req.PageQuery;
 import org.burgeon.sbd.core.res.PageResult;
 import org.burgeon.sbd.core.res.SingleResponse;
@@ -23,16 +24,18 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public SingleResponse<PageResult<ProductDTO>> listProducts(@Valid @ModelAttribute PageQuery pageQuery) {
+    public SingleResponse<PageResult<ProductVO>> pageProducts(@Valid @ModelAttribute PageQuery pageQuery) {
         PageResult<ProductDTO> pageResult = productService.pageProducts(pageQuery.getPageNo(),
                 pageQuery.getPageSize());
-        return SingleResponse.ok(pageResult);
+        PageResult<ProductVO> voPageResult = pageResult.to(PageResult.class);
+        return SingleResponse.ok(voPageResult);
     }
 
     @GetMapping("/{productNo}")
-    public SingleResponse<ProductDTO> getProduct(@PathVariable("productNo") String productNo) {
+    public SingleResponse<ProductVO> getProduct(@PathVariable("productNo") String productNo) {
         ProductDTO productDTO = productService.getProduct(productNo);
-        return SingleResponse.ok(productDTO);
+        ProductVO productVO = productDTO.to(ProductVO.class);
+        return SingleResponse.ok(productVO);
     }
 
 }

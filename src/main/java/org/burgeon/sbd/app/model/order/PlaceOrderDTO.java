@@ -1,4 +1,4 @@
-package org.burgeon.sbd.app.model;
+package org.burgeon.sbd.app.model.order;
 
 import lombok.Data;
 

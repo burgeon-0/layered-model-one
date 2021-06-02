@@ -2,7 +2,7 @@ package org.burgeon.sbd.domain.product;
 
 import lombok.*;
 import org.burgeon.sbd.core.*;
-import org.burgeon.sbd.core.base.ProductBase;
+import org.burgeon.sbd.core.base.ProductBaseModel;
 import org.burgeon.sbd.domain.product.command.CreateProductCommand;
 import org.burgeon.sbd.domain.product.command.UpdateProductCommand;
 import org.burgeon.sbd.domain.product.event.CreateProductEvent;
@@ -16,7 +16,7 @@ import java.util.Date;
  * @author Sam Lu
  * @date 2021/5/30
  */
-public class ProductAggregate extends ProductBase {
+public class ProductAggregate extends ProductBaseModel {
 
     @Setter
     @Getter

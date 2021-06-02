@@ -1,7 +1,8 @@
 package org.burgeon.sbd.adapter.api.admin;
 
+import org.burgeon.sbd.adapter.model.res.order.OrderVO;
 import org.burgeon.sbd.app.OrderService;
-import org.burgeon.sbd.app.model.OrderDTO;
+import org.burgeon.sbd.app.model.order.OrderDTO;
 import org.burgeon.sbd.core.req.PageQuery;
 import org.burgeon.sbd.core.res.PageResult;
 import org.burgeon.sbd.core.res.SingleResponse;
@@ -23,16 +24,18 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public SingleResponse<PageResult<OrderDTO>> pageOrders(@Valid @ModelAttribute PageQuery pageQuery) {
+    public SingleResponse<PageResult<OrderVO>> pageOrders(@Valid @ModelAttribute PageQuery pageQuery) {
         PageResult<OrderDTO> pageResult = orderService.pageOrders(pageQuery.getPageNo(),
                 pageQuery.getPageSize());
-        return SingleResponse.ok(pageResult);
+        PageResult<OrderVO> voPageResult = pageResult.to(PageResult.class);
+        return SingleResponse.ok(voPageResult);
     }
 
     @GetMapping("/{orderNo}")
-    public SingleResponse<OrderDTO> getOrder(@PathVariable("orderNo") String orderNo) {
+    public SingleResponse<OrderVO> getOrder(@PathVariable("orderNo") String orderNo) {
         OrderDTO orderDTO = orderService.getOrder(orderNo);
-        return SingleResponse.ok(orderDTO);
+        OrderVO orderVO = orderDTO.to(OrderVO.class);
+        return SingleResponse.ok(orderVO);
     }
 
 }

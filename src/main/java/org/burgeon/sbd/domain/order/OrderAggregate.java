@@ -5,7 +5,7 @@ import org.burgeon.sbd.core.DomainEventBus;
 import org.burgeon.sbd.core.DomainRepository;
 import org.burgeon.sbd.core.SnKeeper;
 import org.burgeon.sbd.core.SpringBeanFactory;
-import org.burgeon.sbd.core.base.OrderBase;
+import org.burgeon.sbd.core.base.OrderBaseModel;
 import org.burgeon.sbd.core.base.OrderItem;
 import org.burgeon.sbd.domain.order.command.PlaceOrderCommand;
 import org.burgeon.sbd.domain.order.event.CancelOrderEvent;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author Sam Lu
  * @date 2021/5/30
  */
-public class OrderAggregate extends OrderBase {
+public class OrderAggregate extends OrderBaseModel {
 
     @Setter
     @Getter

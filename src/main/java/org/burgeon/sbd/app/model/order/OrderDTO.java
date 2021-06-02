@@ -1,8 +1,8 @@
-package org.burgeon.sbd.app.model;
+package org.burgeon.sbd.app.model.order;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.burgeon.sbd.core.base.OrderBase;
+import org.burgeon.sbd.core.base.OrderBaseModel;
 
 /**
  * @author Sam Lu
@@ -10,7 +10,7 @@ import org.burgeon.sbd.core.base.OrderBase;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class OrderDTO extends OrderBase {
+public class OrderDTO extends OrderBaseModel {
 
     private String orderNo;
 

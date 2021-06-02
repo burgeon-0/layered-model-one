@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author Sam Lu
  * @date 2021/5/30
  */
-public class Base implements Serializable {
+public class BaseModel implements Serializable {
 
     public <T> T to(Class<T> tClass) {
         T target = null;

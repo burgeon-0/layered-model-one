@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 public class OrderItemRepositoryImpl extends AbstractDomainRepository<OrderItem, String> {
 
     @Autowired
-    private OrderItemRepository orderItemRepository;
+    private OrderItemEntityRepository orderItemEntityRepository;
 
     @Override
     public void save(List<OrderItem> orderItems) {
         List<OrderItemEntity> orderItemEntities = orderItems.stream().map(
                 orderItem -> orderItem.to(OrderItemEntity.class)).collect(Collectors.toList());
-        orderItemRepository.saveAll(orderItemEntities);
+        orderItemEntityRepository.saveAll(orderItemEntities);
     }
 
 }

@@ -1,4 +1,4 @@
-package org.burgeon.sbd.domain.product.command;
+package org.burgeon.sbd.app.model.product;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,6 +10,6 @@ import org.burgeon.sbd.core.base.ProductBaseModel;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class CreateProductCommand extends ProductBaseModel {
+public class CreateProductDTO extends ProductBaseModel {
 
 }
