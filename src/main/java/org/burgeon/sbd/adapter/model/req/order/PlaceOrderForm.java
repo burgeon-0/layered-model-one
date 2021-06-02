@@ -1,5 +1,7 @@
 package org.burgeon.sbd.adapter.model.req.order;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.burgeon.sbd.core.base.BaseModel;
@@ -14,6 +16,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PlaceOrderForm extends BaseModel {
 
     @NotNull

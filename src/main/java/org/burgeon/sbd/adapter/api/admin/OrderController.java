@@ -1,5 +1,6 @@
 package org.burgeon.sbd.adapter.api.admin;
 
+import org.burgeon.sbd.adapter.common.resolver.CamelCaseToSnakeCase;
 import org.burgeon.sbd.adapter.model.res.order.OrderVO;
 import org.burgeon.sbd.app.OrderService;
 import org.burgeon.sbd.app.model.order.OrderDTO;
@@ -24,15 +25,15 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public SingleResponse<PageResult<OrderVO>> pageOrders(@Valid @ModelAttribute PageQuery pageQuery) {
+    public SingleResponse<PageResult<OrderVO>> pageOrders(@Valid @CamelCaseToSnakeCase PageQuery pageQuery) {
         PageResult<OrderDTO> pageResult = orderService.pageOrders(pageQuery.getPageNo(),
                 pageQuery.getPageSize());
         PageResult<OrderVO> voPageResult = pageResult.to(PageResult.class);
         return SingleResponse.ok(voPageResult);
     }
 
-    @GetMapping("/{orderNo}")
-    public SingleResponse<OrderVO> getOrder(@PathVariable("orderNo") String orderNo) {
+    @GetMapping("/{order_no}")
+    public SingleResponse<OrderVO> getOrder(@PathVariable("order_no") String orderNo) {
         OrderDTO orderDTO = orderService.getOrder(orderNo);
         OrderVO orderVO = orderDTO.to(OrderVO.class);
         return SingleResponse.ok(orderVO);

@@ -16,6 +16,10 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     /**
+     * 参数非法
+     */
+    PARAM_INVALID(HttpStatus.BAD_REQUEST.value(), 1004001000, "Param Invalid"),
+    /**
      * 登录用户名错误
      */
     LOGIN_USERNAME_INVALID(HttpStatus.BAD_REQUEST.value(), 1004001101, "Login Username Invalid"),
@@ -47,7 +51,13 @@ public enum ErrorCode {
     /**
      * 找不到订单
      */
-    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), 1004041300, "Order Not Found");
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), 1004041300, "Order Not Found"),
+
+    /**
+     * 服务器错误
+     */
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), 1005001000,
+            HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 
     private int status;
     private int code;

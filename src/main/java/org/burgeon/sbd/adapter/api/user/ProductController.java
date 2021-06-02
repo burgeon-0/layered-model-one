@@ -1,5 +1,6 @@
 package org.burgeon.sbd.adapter.api.user;
 
+import org.burgeon.sbd.adapter.common.resolver.CamelCaseToSnakeCase;
 import org.burgeon.sbd.adapter.model.res.product.ProductVO;
 import org.burgeon.sbd.app.ProductService;
 import org.burgeon.sbd.app.model.product.ProductDTO;
@@ -24,15 +25,15 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public SingleResponse<PageResult<ProductVO>> pageProducts(@Valid @ModelAttribute PageQuery pageQuery) {
+    public SingleResponse<PageResult<ProductVO>> pageProducts(@Valid @CamelCaseToSnakeCase PageQuery pageQuery) {
         PageResult<ProductDTO> pageResult = productService.pageProducts(pageQuery.getPageNo(),
                 pageQuery.getPageSize());
         PageResult<ProductVO> voPageResult = pageResult.to(PageResult.class);
         return SingleResponse.ok(voPageResult);
     }
 
-    @GetMapping("/{productNo}")
-    public SingleResponse<ProductVO> getProduct(@PathVariable("productNo") String productNo) {
+    @GetMapping("/{product_no}")
+    public SingleResponse<ProductVO> getProduct(@PathVariable("product_no") String productNo) {
         ProductDTO productDTO = productService.getProduct(productNo);
         ProductVO productVO = productDTO.to(ProductVO.class);
         return SingleResponse.ok(productVO);

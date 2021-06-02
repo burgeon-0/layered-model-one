@@ -37,30 +37,30 @@ public class ProductController {
         return SingleResponse.created(productNo);
     }
 
-    @PutMapping("/{productNo}")
-    public Response updateProduct(@PathVariable("productNo") String productNo,
+    @PutMapping("/{product_no}")
+    public Response updateProduct(@PathVariable("product_no") String productNo,
                                   @Valid @RequestBody UpdateProductForm updateProductForm) {
         UpdateProductDTO updateProductDTO = updateProductForm.to(UpdateProductDTO.class);
         productService.updateProduct(productNo, updateProductDTO);
         return Response.ok();
     }
 
-    @DeleteMapping("/{productNo}")
-    public Response deleteProduct(@PathVariable("productNo") String productNo) {
+    @DeleteMapping("/{product_no}")
+    public Response deleteProduct(@PathVariable("product_no") String productNo) {
         productService.deleteProduct(productNo);
         return Response.ok();
     }
 
     @GetMapping
-    public SingleResponse<PageResult<ProductVO>> pageProducts(@Valid @ModelAttribute PageQuery pageQuery) {
+    public SingleResponse<PageResult<ProductVO>> pageProducts(@Valid PageQuery pageQuery) {
         PageResult<ProductDTO> pageResult = productService.pageProducts(pageQuery.getPageNo(),
                 pageQuery.getPageSize());
         PageResult<ProductVO> voPageResult = pageResult.to(PageResult.class);
         return SingleResponse.ok(voPageResult);
     }
 
-    @GetMapping("/{productNo}")
-    public SingleResponse<ProductVO> getProduct(@PathVariable("productNo") String productNo) {
+    @GetMapping("/{product_no}")
+    public SingleResponse<ProductVO> getProduct(@PathVariable("product_no") String productNo) {
         ProductDTO productDTO = productService.getProduct(productNo);
         ProductVO productVO = productDTO.to(ProductVO.class);
         return SingleResponse.ok(productVO);

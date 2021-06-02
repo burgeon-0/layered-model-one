@@ -1,5 +1,6 @@
 package org.burgeon.sbd.adapter.api.user;
 
+import org.burgeon.sbd.adapter.common.resolver.CamelCaseToSnakeCase;
 import org.burgeon.sbd.adapter.model.req.order.PlaceOrderForm;
 import org.burgeon.sbd.adapter.model.res.order.OrderVO;
 import org.burgeon.sbd.app.OrderService;
@@ -35,34 +36,34 @@ public class OrderController {
         return SingleResponse.created(orderNo);
     }
 
-    @PostMapping("/{orderNo}/actions/pay")
-    public Response payOrder(@PathVariable("orderNo") String orderNo) {
+    @PostMapping("/{order_no}/actions/pay")
+    public Response payOrder(@PathVariable("order_no") String orderNo) {
         orderService.payOrder(orderNo);
         return Response.ok();
     }
 
-    @PostMapping("/{orderNo}/actions/cancel")
-    public Response cancelOrder(@PathVariable("orderNo") String orderNo) {
+    @PostMapping("/{order_no}/actions/cancel")
+    public Response cancelOrder(@PathVariable("order_no") String orderNo) {
         orderService.cancelOrder(orderNo);
         return Response.ok();
     }
 
-    @PostMapping("/{orderNo}/actions/delete")
-    public Response deleteOrder(@PathVariable("orderNo") String orderNo) {
+    @PostMapping("/{order_no}/actions/delete")
+    public Response deleteOrder(@PathVariable("order_no") String orderNo) {
         orderService.deleteOrder(orderNo);
         return Response.ok();
     }
 
     @GetMapping
-    public SingleResponse<PageResult<OrderVO>> pageOrders(@Valid @ModelAttribute PageQuery pageQuery) {
+    public SingleResponse<PageResult<OrderVO>> pageOrders(@Valid @CamelCaseToSnakeCase PageQuery pageQuery) {
         PageResult<OrderDTO> pageResult = orderService.pageOrders(pageQuery.getPageNo(),
                 pageQuery.getPageSize());
         PageResult<OrderVO> voPageResult = pageResult.to(PageResult.class);
         return SingleResponse.ok(voPageResult);
     }
 
-    @GetMapping("/{orderNo}")
-    public SingleResponse<OrderVO> getOrder(@PathVariable("orderNo") String orderNo) {
+    @GetMapping("/{order_no}")
+    public SingleResponse<OrderVO> getOrder(@PathVariable("order_no") String orderNo) {
         OrderDTO orderDTO = orderService.getOrder(orderNo);
         OrderVO orderVO = orderDTO.to(OrderVO.class);
         return SingleResponse.ok(orderVO);
