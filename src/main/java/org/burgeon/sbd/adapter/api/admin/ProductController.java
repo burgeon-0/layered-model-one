@@ -1,5 +1,6 @@
 package org.burgeon.sbd.adapter.api.admin;
 
+import org.burgeon.sbd.adapter.common.resolver.CamelCaseToSnakeCase;
 import org.burgeon.sbd.adapter.model.req.product.CreateProductForm;
 import org.burgeon.sbd.adapter.model.req.product.UpdateProductForm;
 import org.burgeon.sbd.adapter.model.res.product.ProductVO;
@@ -52,7 +53,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public SingleResponse<PageResult<ProductVO>> pageProducts(@Valid PageQuery pageQuery) {
+    public SingleResponse<PageResult<ProductVO>> pageProducts(@Valid @CamelCaseToSnakeCase PageQuery pageQuery) {
         PageResult<ProductDTO> pageResult = productService.pageProducts(pageQuery.getPageNo(),
                 pageQuery.getPageSize());
         PageResult<ProductVO> voPageResult = pageResult.to(PageResult.class);

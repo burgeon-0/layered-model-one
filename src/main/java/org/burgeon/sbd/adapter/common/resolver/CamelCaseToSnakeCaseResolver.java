@@ -28,11 +28,12 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 /**
- * 1. 不能与@RequestBody、@ModelAttribute一起使用，如果使用了Spring的参数注解，Spring会优先使用Spring的参数解析器；<br/>
+ * 1. 不能与@RequestBody、@ModelAttribute一起使用，如果使用了Spring的参数注解，Spring会优先使用Spring默认的参数解析器；<br/>
  * 2. 本类改造自解析ModelAttribute的ModelAttributeMethodProcessor。
  *
  * @author Sam Lu
  * @date 2021/6/2
+ * @see org.springframework.web.method.annotation.ModelAttributeMethodProcessor
  */
 @Slf4j
 public class CamelCaseToSnakeCaseResolver implements HandlerMethodArgumentResolver {

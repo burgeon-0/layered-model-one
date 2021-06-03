@@ -23,4 +23,9 @@ public abstract class AbstractDomainRepository<Entity, Key> implements DomainRep
 
     }
 
+    @Override
+    public void delete(Entity entity) {
+
+    }
+
 }

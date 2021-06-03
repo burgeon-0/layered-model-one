@@ -30,4 +30,11 @@ public interface DomainRepository<Entity, Key> {
      */
     void save(List<Entity> entities);
 
+    /**
+     * 删除实体
+     *
+     * @param entity
+     */
+    void delete(Entity entity);
+
 }
