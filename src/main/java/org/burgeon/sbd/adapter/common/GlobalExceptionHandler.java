@@ -18,11 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * TODO 改进日志打印
- *
  * @author Sam Lu
  * @date 2021/6/2
  */
@@ -37,8 +36,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Response handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        log.warn("Http Message Not Readable Exception -> {}: {}", e.getClass().getName(), e.getMessage());
+    public Response handleHttpMessageNotReadableException(HttpMessageNotReadableException e,
+                                                          HttpServletRequest request) {
+        String uri = String.format("%s %s", request.getMethod(), request.getRequestURI());
+        log.warn("[Exception] [{}], Http Message Not Readable Exception -> {}: {}",
+                uri, e.getClass().getName(), e.getMessage());
+
         // eg: JSON parse error: Unexpected character (':' (code 46)): was expecting comma to separate Object entries;
         String message = e.getMessage();
         String spilt1 = ": ";
@@ -60,8 +63,10 @@ public class GlobalExceptionHandler {
                 int index2 = msg2.indexOf(spilt2, start);
                 if (index1 > -1 && index2 > -1) {
                     msg2 = msg2.substring(0, Math.min(index1, index2));
-                } else {
+                } else if (index1 > -1 || index2 > -1) {
                     msg2 = msg2.substring(0, Math.max(index1, index2));
+                } else {
+                    msg2 = "";
                 }
                 message = msg2.length() > 0 ? msg1 + spilt1 + msg2 : msg1;
             }
@@ -72,22 +77,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<ObjectError> errors = e.getAllErrors();
-        String message = getErrorMessage(errors);
+    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e,
+                                                          HttpServletRequest request) {
+        String uri = String.format("%s %s", request.getMethod(), request.getRequestURI());
+        log.warn("[Exception] [{}], Method Argument Not Valid Exception -> {}: {}",
+                uri, e.getClass().getName(), e.getMessage());
+
+        String message = getErrorMessage(uri, e.getAllErrors());
         return new Response(ErrorCode.PARAM_INVALID.getCode(), message);
     }
 
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Response handleBindException(BindException e) {
-        log.warn("Bind Exception -> {}: {}", e.getClass().getName(), e.getMessage());
-        String message = getErrorMessage(e.getAllErrors());
+    public Response handleBindException(BindException e, HttpServletRequest request) {
+        String uri = String.format("%s %s", request.getMethod(), request.getRequestURI());
+        log.warn("[Exception] [{}], Bind Exception -> {}: {}", uri, e.getClass().getName(), e.getMessage());
+
+        String message = getErrorMessage(uri, e.getAllErrors());
         return new Response(ErrorCode.PARAM_INVALID.getCode(), message);
     }
 
-    private String getErrorMessage(List<ObjectError> errors) {
+    private String getErrorMessage(String uri, List<ObjectError> errors) {
         StringBuilder buf = new StringBuilder();
         for (ObjectError error : errors) {
             if (error instanceof FieldError) {
@@ -96,7 +107,7 @@ public class GlobalExceptionHandler {
                 buf.append("[").append(fieldName).append("] ");
                 buf.append(error.getDefaultMessage()).append("; ");
             } else {
-                log.warn("Method Argument Not Valid Error: {}", error.toString());
+                log.warn("[Exception] [{}], Unexpected Error: {}", uri, error.toString());
             }
         }
         String message = buf.substring(0, buf.length() - 2);
@@ -106,8 +117,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ServletException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Response handleServletException(ServletException e) {
-        log.warn("Servlet Exception -> {}: {}", e.getClass().getName(), e.getMessage());
+    public Response handleServletException(ServletException e, HttpServletRequest request) {
+        String uri = String.format("%s %s", request.getMethod(), request.getRequestURI());
+        log.warn("[Exception] [{}], Servlet Exception -> {}: {}", uri, e.getClass().getName(), e.getMessage());
+
         return new Response(ErrorCode.PARAM_INVALID.getCode(), e.getMessage());
     }
 
@@ -120,8 +133,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public Response handleRuntimeException(RuntimeException e) {
-        log.error("Internal Server Error", e);
+    public Response handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+        String uri = String.format("%s %s", request.getMethod(), request.getRequestURI());
+        log.error("[Exception] [{}], Internal Server Error", uri, e);
+
         return new Response(ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
                 ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
     }
