@@ -3,6 +3,7 @@ package org.burgeon.sbd.infra.repository.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.burgeon.sbd.core.base.BaseModel;
+import org.burgeon.sbd.core.base.OrderBaseModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,6 +41,6 @@ public class OrderEntity extends BaseModel {
     private Date deleteTime;
 
     @Column(name = "status")
-    private String status;
+    private OrderBaseModel.Status status;
 
 }

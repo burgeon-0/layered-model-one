@@ -20,6 +20,25 @@ public class OrderBaseModel extends BaseModel {
     private Date payTime;
     private Date cancelTime;
     private Date deleteTime;
-    private String status;
+    private Status status;
+
+    public enum Status {
+        /**
+         * 未支付
+         */
+        UNPAID,
+        /**
+         * 已支付
+         */
+        PAID,
+        /**
+         * 已取消
+         */
+        CANCELLED,
+        /**
+         * 已删除
+         */
+        DELETED
+    }
 
 }
