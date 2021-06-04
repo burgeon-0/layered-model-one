@@ -26,7 +26,7 @@ public class PlaceOrderForm extends BaseModel {
 
     @Data
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class Item {
+    public static class Item extends BaseModel {
 
         @NotNull
         private String productNo;

@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sam Lu
@@ -32,6 +34,11 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public SingleResponse<String> placeOrder(@Valid @RequestBody PlaceOrderForm placeOrderForm) {
         PlaceOrderDTO placeOrderDTO = placeOrderForm.to(PlaceOrderDTO.class);
+        List<PlaceOrderDTO.Item> dtoItems = new ArrayList<>();
+        for (PlaceOrderForm.Item item : placeOrderForm.getItems()) {
+            dtoItems.add(item.to(PlaceOrderDTO.Item.class));
+        }
+        placeOrderDTO.setItems(dtoItems);
         String orderNo = orderService.placeOrder(placeOrderDTO);
         return SingleResponse.created(orderNo);
     }

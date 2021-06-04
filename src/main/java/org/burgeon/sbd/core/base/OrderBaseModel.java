@@ -20,6 +20,6 @@ public class OrderBaseModel extends BaseModel {
     private Date payTime;
     private Date cancelTime;
     private Date deleteTime;
-    private Integer status;
+    private String status;
 
 }

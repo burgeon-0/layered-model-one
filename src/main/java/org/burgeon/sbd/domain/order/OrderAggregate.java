@@ -45,7 +45,7 @@ public class OrderAggregate extends OrderBaseModel {
     public OrderAggregate(PlaceOrderCommand placeOrderCommand) {
         orderNo = generateOrderNo();
         setPlaceTime(new Date());
-        setStatus(Status.UNPAID.ordinal());
+        setStatus(Status.UNPAID.value);
 
         setItems(new ArrayList<>(placeOrderCommand.getItems().size()));
         List<OrderItem> eventOrderItems = new ArrayList<>(placeOrderCommand.getItems().size());
@@ -82,7 +82,7 @@ public class OrderAggregate extends OrderBaseModel {
 
     public void pay() {
         setPayTime(new Date());
-        setStatus(Status.PAID.ordinal());
+        setStatus(Status.PAID.value);
         orderRepository.save(this);
 
         PayOrderEvent payOrderEvent = new PayOrderEvent();
@@ -93,7 +93,7 @@ public class OrderAggregate extends OrderBaseModel {
 
     public void cancel() {
         setCancelTime(new Date());
-        setStatus(Status.CANCELLED.ordinal());
+        setStatus(Status.CANCELLED.value);
         orderRepository.save(this);
 
         CancelOrderEvent cancelOrderEvent = new CancelOrderEvent();
@@ -104,7 +104,7 @@ public class OrderAggregate extends OrderBaseModel {
 
     public void delete() {
         setDeleteTime(new Date());
-        setStatus(Status.DELETED.ordinal());
+        setStatus(Status.DELETED.value);
         orderRepository.save(this);
 
         DeleteOrderEvent deleteOrderEvent = new DeleteOrderEvent();
@@ -121,19 +121,25 @@ public class OrderAggregate extends OrderBaseModel {
         /**
          * 未支付
          */
-        UNPAID,
+        UNPAID("unpaid"),
         /**
          * 已支付
          */
-        PAID,
+        PAID("paid"),
         /**
          * 已取消
          */
-        CANCELLED,
+        CANCELLED("cancelled"),
         /**
          * 已删除
          */
-        DELETED
+        DELETED("deleted");
+
+        Status(String value) {
+            this.value = value;
+        }
+
+        private String value;
     }
 
 }

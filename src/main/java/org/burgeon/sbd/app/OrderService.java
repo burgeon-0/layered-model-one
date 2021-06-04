@@ -2,6 +2,7 @@ package org.burgeon.sbd.app;
 
 import org.burgeon.sbd.app.model.order.OrderDTO;
 import org.burgeon.sbd.app.model.order.PlaceOrderDTO;
+import org.burgeon.sbd.core.base.OrderItem;
 import org.burgeon.sbd.core.res.PageResult;
 import org.burgeon.sbd.domain.order.OrderAggregate;
 import org.burgeon.sbd.domain.order.OrderAggregateFactory;
@@ -11,7 +12,9 @@ import org.burgeon.sbd.domain.product.ProductAggregateFactory;
 import org.burgeon.sbd.core.exception.ErrorCode;
 import org.burgeon.sbd.core.exception.ParamException;
 import org.burgeon.sbd.infra.repository.OrderEntityRepository;
+import org.burgeon.sbd.infra.repository.OrderItemEntityRepository;
 import org.burgeon.sbd.infra.repository.entity.OrderEntity;
+import org.burgeon.sbd.infra.repository.entity.OrderItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,9 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +38,8 @@ public class OrderService {
     private OrderAggregateFactory orderAggregateFactory;
     @Autowired
     private OrderEntityRepository orderEntityRepository;
+    @Autowired
+    private OrderItemEntityRepository orderItemEntityRepository;
 
     public String placeOrder(PlaceOrderDTO placeOrderDTO) {
         if (CollectionUtils.isEmpty(placeOrderDTO.getItems())) {
@@ -95,8 +98,38 @@ public class OrderService {
         pageResult.setTotal(page.getTotalElements());
         List<OrderDTO> orderDTOList = page.getContent().stream().map(
                 orderEntity -> orderEntity.to(OrderDTO.class)).collect(Collectors.toList());
+
+        if (!CollectionUtils.isEmpty(orderDTOList)) {
+            List<String> orderNos = collectOrderNo(page.getContent());
+            Map<String, List<OrderItem>> orderItemsMap = getOrderItemsMap(orderNos);
+            for (OrderDTO orderDTO : orderDTOList) {
+                orderDTO.setItems(orderItemsMap.get(orderDTO.getOrderNo()));
+            }
+        }
+
         pageResult.setResults(orderDTOList);
         return pageResult;
+    }
+
+    private List<String> collectOrderNo(List<OrderEntity> orderEntities) {
+        List<String> orderNos = orderEntities.stream().map(
+                orderEntity -> orderEntity.getOrderNo()).collect(Collectors.toList());
+        return orderNos;
+    }
+
+    private Map<String, List<OrderItem>> getOrderItemsMap(List<String> orderNos) {
+        Map<String, List<OrderItem>> orderItemsMap = new HashMap<>();
+        List<OrderItemEntity> orderItemEntities = orderItemEntityRepository.findAllByOrderNoIn(orderNos);
+        for (OrderItemEntity orderItemEntity : orderItemEntities) {
+            String orderNo = orderItemEntity.getOrderNo();
+            List<OrderItem> orderItems = orderItemsMap.get(orderNo);
+            if (orderItems == null) {
+                orderItems = new ArrayList<>();
+                orderItemsMap.put(orderNo, orderItems);
+            }
+            orderItems.add(orderItemEntity.to(OrderItem.class));
+        }
+        return orderItemsMap;
     }
 
     public OrderDTO getOrder(String orderNo) {
@@ -105,7 +138,20 @@ public class OrderService {
             throw new ParamException(ErrorCode.ORDER_NOT_FOUND);
         }
         OrderDTO orderDTO = optional.get().to(OrderDTO.class);
+        orderDTO.setItems(getOrderItems(orderNo));
         return orderDTO;
+    }
+
+    private List<OrderItem> getOrderItems(String orderNo) {
+        List<OrderItemEntity> orderItemEntities = orderItemEntityRepository.findAllByOrderNo(orderNo);
+        if (CollectionUtils.isEmpty(orderItemEntities)) {
+            return Collections.EMPTY_LIST;
+        }
+        List<OrderItem> orderItems = new ArrayList<>(orderItemEntities.size());
+        for (OrderItemEntity orderItemEntity : orderItemEntities) {
+            orderItems.add(orderItemEntity.to(OrderItem.class));
+        }
+        return orderItems;
     }
 
 }

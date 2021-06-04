@@ -40,6 +40,6 @@ public class OrderEntity extends BaseModel {
     private Date deleteTime;
 
     @Column(name = "status")
-    private Integer status;
+    private String status;
 
 }
