@@ -6,8 +6,6 @@ import org.burgeon.sbd.infra.repository.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 /**
  * @author Sam Lu
  * @date 2021/5/31
@@ -19,10 +17,9 @@ public class UserRepositoryImpl extends AbstractDomainRepository<UserAggregate, 
     private UserEntityRepository userEntityRepository;
 
     @Override
-    public UserAggregate load(String productNo) {
-        Optional<UserEntity> optional = userEntityRepository.findById(productNo);
-        if (optional.isPresent()) {
-            UserEntity userEntity = optional.get();
+    public UserAggregate load(String username) {
+        UserEntity userEntity = userEntityRepository.findByUsername(username);
+        if (userEntity != null) {
             UserAggregate productAggregate = userEntity.to(UserAggregate.class);
             return productAggregate;
         }
