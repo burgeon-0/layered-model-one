@@ -6,8 +6,6 @@ import org.burgeon.sbd.infra.repository.entity.ProductEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 /**
  * @author Sam Lu
  * @date 2021/5/31
@@ -20,9 +18,8 @@ public class ProductRepositoryImpl extends AbstractDomainRepository<ProductAggre
 
     @Override
     public ProductAggregate load(String productNo) {
-        Optional<ProductEntity> optional = productEntityRepository.findById(productNo);
-        if (optional.isPresent()) {
-            ProductEntity productEntity = optional.get();
+        ProductEntity productEntity = productEntityRepository.findByProductNoAndDeleted(productNo, false);
+        if (productEntity != null) {
             ProductAggregate productAggregate = productEntity.to(ProductAggregate.class);
             return productAggregate;
         }

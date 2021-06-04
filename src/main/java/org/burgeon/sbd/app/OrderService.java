@@ -87,7 +87,7 @@ public class OrderService {
     }
 
     public PageResult<OrderDTO> pageOrders(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         Page<OrderEntity> page = orderEntityRepository.findAll(pageable);
         PageResult<OrderDTO> pageResult = new PageResult();
         pageResult.setPageNo(pageNo);

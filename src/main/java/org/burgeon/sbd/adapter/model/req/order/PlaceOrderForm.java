@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.burgeon.sbd.core.base.BaseModel;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -19,10 +20,12 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PlaceOrderForm extends BaseModel {
 
+    @Valid
     @NotNull
     private List<Item> items;
 
     @Data
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Item {
 
         @NotNull

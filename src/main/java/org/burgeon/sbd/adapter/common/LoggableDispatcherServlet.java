@@ -1,8 +1,10 @@
 package org.burgeon.sbd.adapter.common;
 
 import lombok.extern.slf4j.Slf4j;
-import org.burgeon.sbd.core.SnKeeper;
+import org.burgeon.sbd.core.SnGenerator;
 import org.burgeon.sbd.infra.utils.JsonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -21,7 +23,13 @@ import java.util.Map;
  * @date 2021/6/3
  */
 @Slf4j
+@Component
 public class LoggableDispatcherServlet extends DispatcherServlet {
+
+    private static final long NODE_ID = 500;
+
+    @Autowired
+    private SnGenerator snGenerator;
 
     @Override
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -36,7 +44,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
             Thread thread = Thread.currentThread();
             String oldThreadName = thread.getName();
             try {
-                String newThreadName = SnKeeper.get(LoggableDispatcherServlet.class.getSimpleName());
+                String newThreadName = snGenerator.generateSn(NODE_ID);
                 thread.setName(newThreadName);
                 super.doDispatch(request, response);
             } finally {

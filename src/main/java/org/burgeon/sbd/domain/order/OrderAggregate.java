@@ -1,22 +1,23 @@
 package org.burgeon.sbd.domain.order;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.burgeon.sbd.core.DomainEventBus;
 import org.burgeon.sbd.core.DomainRepository;
-import org.burgeon.sbd.core.SnKeeper;
+import org.burgeon.sbd.core.SnGenerator;
 import org.burgeon.sbd.core.SpringBeanFactory;
 import org.burgeon.sbd.core.base.OrderBaseModel;
 import org.burgeon.sbd.core.base.OrderItem;
+import org.burgeon.sbd.core.exception.BizException;
+import org.burgeon.sbd.core.exception.ErrorCode;
 import org.burgeon.sbd.domain.order.command.PlaceOrderCommand;
 import org.burgeon.sbd.domain.order.event.CancelOrderEvent;
 import org.burgeon.sbd.domain.order.event.DeleteOrderEvent;
 import org.burgeon.sbd.domain.order.event.PayOrderEvent;
 import org.burgeon.sbd.domain.order.event.PlaceOrderEvent;
 import org.burgeon.sbd.domain.product.ProductAggregate;
-import org.burgeon.sbd.core.exception.BizException;
-import org.burgeon.sbd.core.exception.ErrorCode;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,12 +26,16 @@ import java.util.List;
  * @author Sam Lu
  * @date 2021/5/30
  */
+@NoArgsConstructor
 public class OrderAggregate extends OrderBaseModel {
+
+    private static final long NODE_ID = 51;
 
     @Setter
     @Getter
     private String orderNo;
 
+    private SnGenerator snGenerator = SpringBeanFactory.getBean(SnGenerator.class);
     private DomainRepository<OrderAggregate, String> orderRepository = SpringBeanFactory.getDomainRepository(
             OrderAggregate.class, String.class);
     private DomainRepository<OrderItem, String> orderItemRepository = SpringBeanFactory.getDomainRepository(
@@ -109,10 +114,7 @@ public class OrderAggregate extends OrderBaseModel {
     }
 
     private String generateOrderNo() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String prefix = sdf.format(new Date());
-        String sn = SnKeeper.get("Order:" + prefix);
-        return prefix + sn;
+        return snGenerator.generateSn(NODE_ID);
     }
 
     enum Status {

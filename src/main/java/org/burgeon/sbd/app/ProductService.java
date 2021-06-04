@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -58,8 +57,8 @@ public class ProductService {
     }
 
     public PageResult<ProductDTO> pageProducts(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<ProductEntity> page = productEntityRepository.findAll(pageable);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<ProductEntity> page = productEntityRepository.findAllByDeleted(pageable, false);
         PageResult<ProductDTO> pageResult = new PageResult();
         pageResult.setPageNo(pageNo);
         pageResult.setPageSize(pageSize);
@@ -71,11 +70,11 @@ public class ProductService {
     }
 
     public ProductDTO getProduct(String productNo) {
-        Optional<ProductEntity> optional = productEntityRepository.findById(productNo);
-        if (!optional.isPresent()) {
+        ProductEntity productEntity = productEntityRepository.findByProductNoAndDeleted(productNo, false);
+        if (productEntity == null) {
             throw new ParamException(ErrorCode.PRODUCT_NOT_FOUND);
         }
-        ProductDTO productDTO = optional.get().to(ProductDTO.class);
+        ProductDTO productDTO = productEntity.to(ProductDTO.class);
         return productDTO;
     }
 

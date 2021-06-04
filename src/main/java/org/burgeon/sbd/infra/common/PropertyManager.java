@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class PropertyManager implements Copyable {
 
+    /**
+     * TODO copy child object
+     *
+     * @param source
+     * @param target
+     */
     @Override
     public void copy(Object source, Object target) {
         BeanUtils.copyProperties(source, target);

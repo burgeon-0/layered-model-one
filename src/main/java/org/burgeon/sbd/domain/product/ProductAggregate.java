@@ -1,6 +1,8 @@
 package org.burgeon.sbd.domain.product;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.burgeon.sbd.core.*;
 import org.burgeon.sbd.core.base.ProductBaseModel;
 import org.burgeon.sbd.domain.product.command.CreateProductCommand;
@@ -9,14 +11,14 @@ import org.burgeon.sbd.domain.product.event.CreateProductEvent;
 import org.burgeon.sbd.domain.product.event.DeleteProductEvent;
 import org.burgeon.sbd.domain.product.event.UpdateProductEvent;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * @author Sam Lu
  * @date 2021/5/30
  */
+@NoArgsConstructor
 public class ProductAggregate extends ProductBaseModel {
+
+    private static final long NODE_ID = 50;
 
     @Setter
     @Getter
@@ -25,6 +27,7 @@ public class ProductAggregate extends ProductBaseModel {
     @Getter
     private boolean deleted;
 
+    private SnGenerator snGenerator = SpringBeanFactory.getBean(SnGenerator.class);
     private Copyable copyable = SpringBeanFactory.getBean(Copyable.class);
     private DomainRepository<ProductAggregate, String> productRepository = SpringBeanFactory.getDomainRepository(
             ProductAggregate.class, String.class);
@@ -63,10 +66,7 @@ public class ProductAggregate extends ProductBaseModel {
     }
 
     private String generateProductNo() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String prefix = sdf.format(new Date());
-        String sn = SnKeeper.get("Product:" + prefix);
-        return prefix + sn;
+        return snGenerator.generateSn(NODE_ID);
     }
 
 }
