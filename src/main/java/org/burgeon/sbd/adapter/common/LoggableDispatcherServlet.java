@@ -6,7 +6,6 @@ import org.burgeon.sbd.infra.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,31 +26,32 @@ import java.util.Map;
 public class LoggableDispatcherServlet extends DispatcherServlet {
 
     private static final long NODE_ID = 500;
+    private static final long MAX_LENGTH = 5120;
 
     @Autowired
     private SnGenerator snGenerator;
 
     @Override
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Thread thread = Thread.currentThread();
+        String originThreadName = thread.getName();
+
         try {
-            if (!(request instanceof ContentCachingRequestWrapper)) {
-                request = new ContentCachingRequestWrapper(request);
-            }
+            request = new FilterRequestWrapper(request);
             if (!(response instanceof ContentCachingResponseWrapper)) {
                 response = new ContentCachingResponseWrapper(response);
             }
+
+            String logThreadName = snGenerator.generateSn(NODE_ID);
+            thread.setName(logThreadName);
+            logRequest(request);
         } finally {
-            Thread thread = Thread.currentThread();
-            String oldThreadName = thread.getName();
             try {
-                String newThreadName = snGenerator.generateSn(NODE_ID);
-                thread.setName(newThreadName);
                 super.doDispatch(request, response);
             } finally {
-                logRequest(request);
                 logResponse(request, response);
                 updateResponse(response);
-                thread.setName(oldThreadName);
+                thread.setName(originThreadName);
             }
         }
     }
@@ -60,7 +60,11 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         try {
             String uri = getUri(request);
             String queryString = request.getQueryString();
-            String body = getBody(request);
+            String body = null;
+            long contentLength = request.getContentLengthLong();
+            if (contentLength <= MAX_LENGTH) {
+                body = getBody(request);
+            }
             Map<String, String> headers = getHeaders(request);
 
             log.info("[  Request] [{}], QueryString: {}, Body: {}, Headers: {}",
@@ -73,7 +77,11 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
     private void logResponse(HttpServletRequest request, HttpServletResponse response) {
         try {
             String uri = getUri(request);
-            String body = getBody(response);
+            String body = null;
+            long contentLength = ((ContentCachingResponseWrapper) response).getContentSize();
+            if (contentLength <= MAX_LENGTH) {
+                body = getBody(response);
+            }
             Map<String, String> headers = getHeaders(response);
 
             log.info("[ Response] [{}], Status: {}, Body: {}, Headers: {}",
@@ -108,16 +116,11 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
     }
 
     private String getBody(HttpServletRequest request) {
-        ContentCachingRequestWrapper wrapper = (ContentCachingRequestWrapper) request;
         String body = null;
-        if (wrapper != null) {
-            byte[] buf = wrapper.getContentAsByteArray();
-            String encoding = wrapper.getCharacterEncoding();
+        if (request != null) {
+            byte[] buf = ((FilterRequestWrapper) request).getContentAsByteArray();
+            String encoding = request.getCharacterEncoding();
             body = getBody(buf, encoding);
-            if (body != null) {
-                body = body.replaceAll("\n", "");
-                body = body.replaceAll("\t", "");
-            }
         }
         return body;
     }
@@ -135,7 +138,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
 
     private String getBody(byte[] buf, String encoding) {
         if (buf.length > 0) {
-            int length = Math.min(buf.length, 5120);
+            int length = (int) Math.min(buf.length, MAX_LENGTH);
             try {
                 return new String(buf, 0, length, encoding);
             } catch (UnsupportedEncodingException e) {
