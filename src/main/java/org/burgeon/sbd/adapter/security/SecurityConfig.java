@@ -90,27 +90,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher(Constants.API + "/**")
-                    .authorizeRequests()
-                    .anyRequest().permitAll()
-                    .and()
-                    .csrf().disable()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        }
-
-    }
-
-    @Configuration
-    @Order(4)
-    class DefaultSecurityConfig extends WebSecurityConfigurerAdapter {
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/**")
-                    .authorizeRequests()
-                    .anyRequest().permitAll()
-                    .and()
-                    .csrf().disable();
+            http.authorizeRequests()
+                    .antMatchers("/", "/h2_console/**", Constants.API + "/**")
+                    .permitAll();
+            http.csrf().disable();
+            http.headers().frameOptions().disable();
         }
 
     }
