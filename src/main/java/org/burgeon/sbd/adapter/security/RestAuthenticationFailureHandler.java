@@ -11,8 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * RestAuthenticationFailureHandler只会捕获AuthenticationProvider抛出的异常，
+ * 但不会丢失业务抛出的AuthenticationException的信息，与AuthenticationEntryPoint刚好互补
+ *
  * @author Sam Lu
  * @date 2021/6/6
+ * @see RestAuthenticationEntryPoint
  */
 @Slf4j
 public class RestAuthenticationFailureHandler implements AuthenticationFailureHandler {

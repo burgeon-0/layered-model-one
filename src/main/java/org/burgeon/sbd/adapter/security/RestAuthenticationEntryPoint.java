@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * 在AuthenticationEntryPoint中会丢失业务抛出的AuthenticationException信息
+ *
  * @author Sam Lu
  * @date 2021/6/5
+ * @see RestAuthenticationFailureHandler
  */
 @Slf4j
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {

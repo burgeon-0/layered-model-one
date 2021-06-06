@@ -3,6 +3,8 @@ package org.burgeon.sbd.adapter.security;
 import org.springframework.security.core.AuthenticationException;
 
 /**
+ * 认证失败的异常信息
+ *
  * @author Sam Lu
  * @date 2021/6/5
  */

@@ -100,7 +100,7 @@ public class OrderService {
                 orderEntity -> orderEntity.to(OrderDTO.class)).collect(Collectors.toList());
 
         if (!CollectionUtils.isEmpty(orderDTOList)) {
-            List<String> orderNos = collectOrderNo(page.getContent());
+            List<String> orderNos = collectOrderNos(page.getContent());
             Map<String, List<OrderItem>> orderItemsMap = getOrderItemsMap(orderNos);
             for (OrderDTO orderDTO : orderDTOList) {
                 orderDTO.setItems(orderItemsMap.get(orderDTO.getOrderNo()));
@@ -111,7 +111,7 @@ public class OrderService {
         return pageResult;
     }
 
-    private List<String> collectOrderNo(List<OrderEntity> orderEntities) {
+    private List<String> collectOrderNos(List<OrderEntity> orderEntities) {
         List<String> orderNos = orderEntities.stream().map(
                 orderEntity -> orderEntity.getOrderNo()).collect(Collectors.toList());
         return orderNos;

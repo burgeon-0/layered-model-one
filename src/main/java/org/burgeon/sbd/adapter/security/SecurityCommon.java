@@ -14,6 +14,9 @@ import java.io.IOException;
  */
 public class SecurityCommon {
 
+    /**
+     * 异常信息是否已输出到response，如果已经输出，则无需重复输出
+     */
     public static final String X_INNER_SECURITY_EXCEPTION_RESPONDED = "X-Inner-Security-Exception-Responded";
 
     public static void response(HttpServletResponse response, ErrorCode errorCode) throws IOException {
