@@ -1,6 +1,7 @@
 package org.burgeon.sbd.adapter.security.admin;
 
 import lombok.extern.slf4j.Slf4j;
+import org.burgeon.sbd.adapter.security.SecurityForbiddenException;
 import org.burgeon.sbd.adapter.security.SecurityUnauthorizedException;
 import org.burgeon.sbd.domain.user.UserAggregate;
 import org.burgeon.sbd.domain.user.UserAggregateFactory;
@@ -29,6 +30,10 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         UserAggregate userAggregate = userAggregateFactory.loadByToken(token);
         if (userAggregate == null) {
             throw new SecurityUnauthorizedException("Token Invalid: " + token);
+        }
+
+        if (!userAggregate.getIsAdmin()) {
+            throw new SecurityForbiddenException("The User Is Not An Admin");
         }
 
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(

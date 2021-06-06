@@ -29,4 +29,7 @@ public class UserEntity extends BaseModel {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "is_admin")
+    private Boolean isAdmin;
+
 }

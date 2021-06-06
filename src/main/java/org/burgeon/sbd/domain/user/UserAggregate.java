@@ -32,8 +32,14 @@ public class UserAggregate extends UserBaseModel {
     private DomainEventBus domainEventBus = SpringBeanFactory.getBean(DomainEventBus.class);
 
     public UserAggregate(RegisterCommand registerCommand) {
+        UserAggregate userAggregate = userRepository.load(registerCommand.getUsername());
+        if (userAggregate != null) {
+            throw new BizException(ErrorCode.USERNAME_EXISTS);
+        }
+
         userId = generateUserId();
         copyable.copy(registerCommand, this);
+        setIsAdmin(false);
         userRepository.save(this);
 
         RegisterEvent registerEvent = registerCommand.to(RegisterEvent.class);

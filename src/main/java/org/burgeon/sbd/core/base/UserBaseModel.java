@@ -13,5 +13,6 @@ public class UserBaseModel extends BaseModel {
 
     private String username;
     private String password;
+    private Boolean isAdmin;
 
 }

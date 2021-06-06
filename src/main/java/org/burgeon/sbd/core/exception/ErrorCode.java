@@ -28,6 +28,10 @@ public enum ErrorCode {
      */
     LOGIN_PASSWORD_INVALID(HttpStatus.BAD_REQUEST.value(), 1004001102, "Login Password Invalid"),
     /**
+     * 用户名已存在
+     */
+    USERNAME_EXISTS(HttpStatus.BAD_REQUEST.value(), 1004001103, "Username Exists"),
+    /**
      * 产品库存不足
      */
     PRODUCT_STOCK_NOT_ENOUGH(HttpStatus.BAD_REQUEST.value(), 1004001201, "Product Stock Not Enough"),
