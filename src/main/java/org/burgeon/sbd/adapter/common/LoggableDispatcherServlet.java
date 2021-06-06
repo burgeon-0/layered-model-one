@@ -48,6 +48,8 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         } finally {
             try {
                 super.doDispatch(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
             } finally {
                 logResponse(request, response);
                 updateResponse(response);

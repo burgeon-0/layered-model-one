@@ -37,6 +37,16 @@ public enum ErrorCode {
     ORDER_ITEM_NULL(HttpStatus.BAD_REQUEST.value(), 1004001301, "Order Item Must Not Be Null"),
 
     /**
+     * 认证不通过
+     */
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), 1004011000, HttpStatus.UNAUTHORIZED.getReasonPhrase()),
+
+    /**
+     * 没有访问权限
+     */
+    FORBIDDEN(HttpStatus.FORBIDDEN.value(), 1004031000, HttpStatus.FORBIDDEN.getReasonPhrase()),
+
+    /**
      * 找不到资源，包含URI资源和数据资源等
      */
     SOURCE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), 1004041000, HttpStatus.NOT_FOUND.getReasonPhrase()),

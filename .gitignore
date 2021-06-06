@@ -36,4 +36,4 @@ out/
 *.tmp
 
 # H2
-*.mv.db
+*.db

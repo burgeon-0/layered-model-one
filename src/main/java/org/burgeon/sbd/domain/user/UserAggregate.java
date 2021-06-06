@@ -52,7 +52,10 @@ public class UserAggregate extends UserBaseModel {
         LoginEvent loginEvent = loginCommand.to(LoginEvent.class);
         loginEvent.setUserId(userId);
         domainEventBus.publishEvent(loginEvent);
-        return generateToken();
+
+        String token = generateToken();
+        TokenFactory.put(token, getUsername());
+        return token;
     }
 
     private boolean correctUsername(String username) {

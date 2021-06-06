@@ -17,4 +17,12 @@ public class UserAggregateFactory extends DomainFactory<UserAggregate, String> {
         return super.load(username);
     }
 
+    public UserAggregate loadByToken(String token) {
+        String username = TokenFactory.get(token);
+        if (username == null) {
+            return null;
+        }
+        return load(username);
+    }
+
 }
