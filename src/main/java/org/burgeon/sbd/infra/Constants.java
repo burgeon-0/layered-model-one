@@ -10,4 +10,6 @@ public class Constants {
     public static final String API_ADMIN = "/api/admin";
     public static final String API_USER = "/api/user";
 
+    public static final String ENCODING_UTF8 = "UTF-8";
+
 }

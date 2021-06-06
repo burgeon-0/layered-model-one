@@ -1,15 +1,13 @@
 package org.burgeon.sbd.adapter.common;
 
 import lombok.extern.slf4j.Slf4j;
+import org.burgeon.sbd.infra.Constants;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
 /**
  * @author Sam Lu
@@ -52,7 +50,7 @@ public class FilterRequestWrapper extends HttpServletRequestWrapper {
         }
         try {
             String content = cachedContent.toString();
-            return content.getBytes(getCharacterEncoding());
+            return content.getBytes(Constants.ENCODING_UTF8);
         } catch (UnsupportedEncodingException e) {
             log.error("Unsupported Encoding Exception", e);
         }
@@ -62,8 +60,9 @@ public class FilterRequestWrapper extends HttpServletRequestWrapper {
     private void read() {
         try {
             InputStream is = super.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, Constants.ENCODING_UTF8));
             cachedContent = new StringBuilder();
-            for (int n; (n = is.read()) != -1; ) {
+            for (int n; (n = br.read()) != -1; ) {
                 cachedContent.append((char) n);
             }
             cached = true;
@@ -81,7 +80,7 @@ public class FilterRequestWrapper extends HttpServletRequestWrapper {
             try {
                 this.inputStream = inputStream;
                 String content = cachedContent.toString();
-                byte[] bytes = content.getBytes(getCharacterEncoding());
+                byte[] bytes = content.getBytes(Constants.ENCODING_UTF8);
                 stream = new ByteArrayInputStream(bytes);
             } catch (UnsupportedEncodingException e) {
                 log.error("Unsupported Encoding Exception", e);

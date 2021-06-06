@@ -2,6 +2,7 @@ package org.burgeon.sbd.adapter.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.burgeon.sbd.core.SnGenerator;
+import org.burgeon.sbd.infra.Constants;
 import org.burgeon.sbd.infra.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -121,8 +122,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         String body = null;
         if (request != null) {
             byte[] buf = ((FilterRequestWrapper) request).getContentAsByteArray();
-            String encoding = request.getCharacterEncoding();
-            body = getBody(buf, encoding);
+            body = getBody(buf, Constants.ENCODING_UTF8);
         }
         return body;
     }
@@ -132,8 +132,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         String body = null;
         if (wrapper != null) {
             byte[] buf = wrapper.getContentAsByteArray();
-            String encoding = wrapper.getCharacterEncoding();
-            body = getBody(buf, encoding);
+            body = getBody(buf, Constants.ENCODING_UTF8);
         }
         return body;
     }
