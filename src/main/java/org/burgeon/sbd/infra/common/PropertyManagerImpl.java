@@ -1,6 +1,6 @@
 package org.burgeon.sbd.infra.common;
 
-import org.burgeon.sbd.core.Copyable;
+import org.burgeon.sbd.core.PropertyManager;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @date 2021/5/31
  */
 @Component
-public class PropertyManager implements Copyable {
+public class PropertyManagerImpl implements PropertyManager {
 
     /**
      * TODO copy child object

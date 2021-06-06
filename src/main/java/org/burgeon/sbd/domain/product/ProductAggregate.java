@@ -28,14 +28,14 @@ public class ProductAggregate extends ProductBaseModel {
     private boolean deleted;
 
     private SnGenerator snGenerator = SpringBeanFactory.getBean(SnGenerator.class);
-    private Copyable copyable = SpringBeanFactory.getBean(Copyable.class);
+    private PropertyManager propertyManager = SpringBeanFactory.getBean(PropertyManager.class);
     private DomainRepository<ProductAggregate, String> productRepository = SpringBeanFactory.getDomainRepository(
             ProductAggregate.class, String.class);
     private DomainEventBus domainEventBus = SpringBeanFactory.getBean(DomainEventBus.class);
 
     public ProductAggregate(CreateProductCommand createProductCommand) {
         productNo = generateProductNo();
-        copyable.copy(createProductCommand, this);
+        propertyManager.copy(createProductCommand, this);
         productRepository.save(this);
 
         CreateProductEvent createProductEvent = createProductCommand.to(CreateProductEvent.class);
@@ -44,7 +44,7 @@ public class ProductAggregate extends ProductBaseModel {
     }
 
     public void update(UpdateProductCommand updateProductCommand) {
-        copyable.copy(updateProductCommand, this);
+        propertyManager.copy(updateProductCommand, this);
         productRepository.save(this);
 
         UpdateProductEvent updateProductEvent = updateProductCommand.to(UpdateProductEvent.class);

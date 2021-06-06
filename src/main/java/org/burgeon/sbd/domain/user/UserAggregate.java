@@ -1,7 +1,7 @@
 package org.burgeon.sbd.domain.user;
 
 import lombok.*;
-import org.burgeon.sbd.core.Copyable;
+import org.burgeon.sbd.core.PropertyManager;
 import org.burgeon.sbd.core.DomainEventBus;
 import org.burgeon.sbd.core.DomainRepository;
 import org.burgeon.sbd.core.SpringBeanFactory;
@@ -26,7 +26,7 @@ public class UserAggregate extends UserBaseModel {
     @Getter
     private String userId;
 
-    private Copyable copyable = SpringBeanFactory.getBean(Copyable.class);
+    private PropertyManager propertyManager = SpringBeanFactory.getBean(PropertyManager.class);
     private DomainRepository<UserAggregate, String> userRepository = SpringBeanFactory.getDomainRepository(
             UserAggregate.class, String.class);
     private DomainEventBus domainEventBus = SpringBeanFactory.getBean(DomainEventBus.class);
@@ -38,7 +38,7 @@ public class UserAggregate extends UserBaseModel {
         }
 
         userId = generateUserId();
-        copyable.copy(registerCommand, this);
+        propertyManager.copy(registerCommand, this);
         setIsAdmin(false);
         userRepository.save(this);
 

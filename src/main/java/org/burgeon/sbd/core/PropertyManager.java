@@ -4,7 +4,7 @@ package org.burgeon.sbd.core;
  * @author Sam Lu
  * @date 2021/5/31
  */
-public interface Copyable {
+public interface PropertyManager {
 
     /**
      * 复制对象

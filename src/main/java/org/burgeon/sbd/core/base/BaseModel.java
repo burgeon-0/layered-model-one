@@ -1,7 +1,7 @@
 package org.burgeon.sbd.core.base;
 
 import lombok.extern.slf4j.Slf4j;
-import org.burgeon.sbd.core.Copyable;
+import org.burgeon.sbd.core.PropertyManager;
 import org.burgeon.sbd.core.SpringBeanFactory;
 
 import java.io.Serializable;
@@ -22,8 +22,8 @@ public class BaseModel implements Serializable {
         } catch (IllegalAccessException e) {
             log.error("Illegal Access Exception", e);
         }
-        Copyable copyable = SpringBeanFactory.getBean(Copyable.class);
-        copyable.copy(this, target);
+        PropertyManager propertyManager = SpringBeanFactory.getBean(PropertyManager.class);
+        propertyManager.copy(this, target);
         return target;
     }
 
