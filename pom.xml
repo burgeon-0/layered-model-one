@@ -8,7 +8,7 @@
         <version>2.5.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.burgeon</groupId>
+    <groupId>org.bg181</groupId>
     <artifactId>sbd</artifactId>
     <version>1.0.0</version>
     <name>sbd</name>
